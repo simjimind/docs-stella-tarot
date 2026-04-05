@@ -1,0 +1,320 @@
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+.scene{
+  min-height:540px;
+  background:linear-gradient(145deg,#fde8f0 0%,#ede8fd 45%,#e8f0fd 100%);
+  border-radius:20px;
+  font-family:sans-serif;
+  display:flex;flex-direction:column;align-items:center;
+  padding:2rem 1rem 2.5rem;
+  position:relative;overflow:hidden;
+}
+.scene::before{content:'';position:absolute;top:-80px;right:-60px;width:220px;height:220px;border-radius:50%;background:rgba(200,180,255,0.2);}
+.scene::after{content:'';position:absolute;bottom:-50px;left:-50px;width:180px;height:180px;border-radius:50%;background:rgba(180,210,255,0.2);}
+
+.top-badge{
+  font-size:11px;letter-spacing:0.12em;color:#9a80c0;font-weight:600;
+  background:rgba(255,255,255,0.6);border-radius:20px;padding:5px 14px;
+  margin-bottom:1rem;z-index:2;
+}
+.title{font-size:17px;font-weight:500;color:#4a3d60;text-align:center;line-height:1.6;margin-bottom:0.4rem;z-index:2;}
+.sub{font-size:13px;color:#a090c0;text-align:center;margin-bottom:1.8rem;z-index:2;}
+
+/* ── 카드 덱 ── */
+.deck-area{
+  width:100%;max-width:520px;
+  position:relative;
+  height:200px;
+  z-index:2;
+  margin-bottom:1.2rem;
+}
+.deck-hint{text-align:center;font-size:13px;color:#b0a0c8;z-index:2;position:relative; transition: opacity 0.3s;}
+
+.card-slot{
+  position:absolute;
+  width:72px;height:110px;
+  cursor:pointer;
+  transition:transform 0.3s ease;
+  transform-style:preserve-3d;
+  perspective:800px;
+}
+.card-slot:hover .card-inner{transform:rotateY(15deg) translateY(-14px);}
+.card-slot.selected .card-inner{transform:rotateY(0deg) translateY(-18px);}
+.card-slot.fade-out{opacity:0;transform:scale(0.85) translateY(20px);transition:all 0.4s ease;pointer-events:none;}
+
+.card-inner{
+  width:100%;height:100%;
+  position:relative;
+  transform-style:preserve-3d;
+  transition:transform 0.7s cubic-bezier(.4,0,.2,1);
+}
+.card-front,.card-back{
+  position:absolute;inset:0;
+  border-radius:12px;
+  backface-visibility:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+.card-back{
+  background:linear-gradient(160deg,#c8b0f0,#a0b0f8,#b0d0f0);
+  border:1.5px solid rgba(255,255,255,0.7);
+  box-shadow:0 4px 16px rgba(160,140,220,0.25);
+}
+.card-back-pattern{
+  width:52px;height:80px;
+  border:1.5px solid rgba(255,255,255,0.5);
+  border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;
+  background:rgba(255,255,255,0.12);
+}
+.card-back-pattern span{font-size:22px;opacity:0.85;}
+
+.card-front{
+  background:white;
+  border:1.5px solid rgba(255,255,255,0.9);
+  box-shadow:0 8px 30px rgba(160,140,220,0.3);
+  transform:rotateY(180deg);
+  padding:4px;
+}
+.cf-img-preview{width:100%;height:100%;object-fit:cover;border-radius:8px;}
+
+/* 선택 후 큰 카드 뒤집기 */
+.flip-stage{
+  display:none;
+  flex-direction:column;align-items:center;
+  z-index:2;width:100%;
+}
+.big-card-wrap{
+  width:180px;height:280px; /* 그림이 잘 보이도록 크기 확대 */
+  perspective:1000px;
+  margin-bottom:1.5rem;
+}
+.big-inner{
+  width:100%;height:100%;
+  position:relative;
+  transform-style:preserve-3d;
+  transition:transform 0.9s cubic-bezier(.4,0,.2,1);
+}
+.big-inner.flipped{transform:rotateY(180deg);}
+.big-front,.big-back{
+  position:absolute;inset:0;
+  border-radius:16px;
+  backface-visibility:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  box-shadow:0 12px 40px rgba(160,140,220,0.3);
+}
+.big-back{
+  background:linear-gradient(160deg,#c8b0f0,#a0b0f8,#b0d0f0);
+  border:2px solid rgba(255,255,255,0.7);
+}
+.big-back-inner{
+  width:140px;height:220px;
+  border:2px solid rgba(255,255,255,0.5);
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,0.1);
+  font-size:46px;
+}
+.big-front{
+  background:white;
+  border:2px solid rgba(255,255,255,0.9);
+  transform:rotateY(180deg);
+  padding:8px; /* 그림만 꽉 차게 보이도록 패딩 조절 */
+}
+.bf-image{width:100%;height:100%;object-fit:cover;border-radius:10px;background:#f5f5f5;}
+
+/* 결과 텍스트 */
+.result-card{
+  width:100%;max-width:480px;
+  background:rgba(255,255,255,0.85);
+  backdrop-filter:blur(10px);
+  border:1.5px solid rgba(220,210,250,0.7);
+  border-radius:20px;
+  padding:1.5rem;
+  display:none;
+  animation:fadeUp 0.6s ease forwards;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+
+.rc-title{font-size:16px;color:#5040a0;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.rc-keywords{font-size:13px;color:#e86c9a;font-weight:600;margin-bottom:12px;background:rgba(232,108,154,0.1);display:inline-block;padding:4px 10px;border-radius:10px;}
+.rc-body{font-size:15px;color:#4a3d60;line-height:1.8;word-break:keep-all;}
+
+.again-btn{
+  margin-top:1.5rem;width:100%;padding:12px;
+  border:1.5px solid rgba(180,160,230,0.5);
+  border-radius:14px;background:white;
+  color:#8070b0;font-size:14px;cursor:pointer;
+  transition:all 0.2s;
+}
+.again-btn:hover{background:rgba(180,160,230,0.1);transform:translateY(-2px);}
+</style>
+
+<div class="scene" id="scene">
+  <div class="top-badge">✦ STELLA TAROT ✦</div>
+  <div class="title" id="mainTitle">나의 길, 나의 인생!</div>
+  <div class="sub" id="mainSub">마음을 모으고 우주의 선의와 함께 지혜를 청합니다</div>
+
+  <div id="deckView" style="width:100%;display:flex;flex-direction:column;align-items:center;z-index:2;">
+    <div class="deck-area" id="deckArea"></div>
+    <div class="deck-hint" id="deckHint">마음이 끌리는 카드를 한 장 선택하세요</div>
+  </div>
+
+  <div class="flip-stage" id="flipStage">
+    <div class="big-card-wrap">
+      <div class="big-inner" id="bigInner">
+        <div class="big-back"><div class="big-back-inner">✦</div></div>
+        <div class="big-front" id="bigFront">
+          <img src="" class="bf-image" id="bfImage" alt="Tarot Card">
+        </div>
+      </div>
+    </div>
+    <div class="result-card" id="resultCard">
+      <div class="rc-title" id="rcTitle"></div>
+      <div class="rc-keywords" id="rcKeywords"></div>
+      <div class="rc-body" id="rcBody"></div>
+      <button class="again-btn" id="againBtn" onclick="restart()">다른 카드 뽑기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// 메이저 아르카나 22장
+const MAJOR_CARDS = [
+  {n:'0', name:'바보 (The Fool)', keywords:'자유, 새로운 시작, 순수', desc:'지금은 계산하기보다 당신의 직관을 믿고 첫발을 내디뎌야 할 때입니다. 두려움 없는 마음이 새로운 길을 열어줄 것입니다.', img:'images/major_0.jpg'},
+  {n:'I', name:'마법사 (The Magician)', keywords:'창조력, 의지, 잠재력', desc:'당신은 이미 필요한 모든 도구를 갖추고 있습니다. 당신의 아이디어를 현실로 바꿀 수 있는 강력한 에너지가 집중되는 시기입니다.', img:'images/major_1.jpg'},
+  {n:'II', name:'여사제 (The High Priestess)', keywords:'직관, 지혜, 신비', desc:'잠시 멈춰 내면의 목소리에 귀를 기울이세요. 밖으로 드러난 상황보다 당신이 느끼는 보이지 않는 진실이 더 중요합니다.', img:'images/major_2.jpg'},
+  {n:'III', name:'여황제 (The Empress)', keywords:'풍요, 모성애, 아름다움', desc:'풍요로움과 결실이 함께하는 시기입니다. 당신의 주변을 돌보고 스스로를 사랑하며 마음껏 누리셔도 좋습니다.', img:'images/major_3.jpg'},
+  {n:'IV', name:'황제 (The Emperor)', keywords:'권위, 질서, 리더십', desc:'흔들리지 않는 확신과 질서가 필요한 때입니다. 명확한 계획과 책임감을 가지고 상황을 리드해 나가세요.', img:'images/major_4.jpg'},
+  {n:'V', name:'교황 (The Hierophant)', keywords:'믿음, 전통, 가르침', desc:'혼자 해결하기보다 전통적인 방식이나 신뢰할 수 있는 멘토의 조언을 구하는 것이 큰 도움이 될 것입니다.', img:'images/major_5.jpg'},
+  {n:'VI', name:'연인 (The Lovers)', keywords:'사랑, 조화, 선택', desc:'마음이 이끄는 대로 조화로운 선택을 하세요. 사람과의 관계에서나 중요한 결합에서 긍정적인 에너지가 흐릅니다.', img:'images/major_6.jpg'},
+  {n:'VII', name:'전차 (The Chariot)', keywords:'의지, 전진, 승리', desc:'강력한 추진력이 필요한 시점입니다. 목표를 향해 앞만 보고 달려가세요. 당신의 의지가 승리를 가져다줄 것입니다.', img:'images/major_7.jpg'},
+  {n:'VIII', name:'힘 (Strength)', keywords:'용기, 인내, 부드러운 힘', desc:'진정한 힘은 강압이 아닌 부드러운 인내에서 나옵니다. 내면의 본능을 다스리고 따뜻한 포용력으로 상황을 조율하세요.', img:'images/major_8.jpg'},
+  {n:'IX', name:'은둔자 (The Hermit)', keywords:'성찰, 내면의 빛, 탐구', desc:'세상의 소음을 뒤로하고 혼자만의 시간을 가지세요. 당신이 찾고 있는 해답은 이미 당신의 내면 깊은 곳에 있습니다.', img:'images/major_9.jpg'},
+  {n:'X', name:'운명의 바퀴 (Wheel of Fortune)', keywords:'전환점, 운명, 기회', desc:'변화의 흐름이 찾아왔습니다. 순리에 몸을 맡기세요. 지금 일어나는 변화는 당신을 더 나은 곳으로 이끄는 운명적 흐름입니다.', img:'images/major_10.jpg'},
+  {n:'XI', name:'정의 (Justice)', keywords:'균형, 공정함, 진실', desc:'감정에 치우치기보다 객관적이고 공정하게 판단해야 합니다. 정직한 행동이 가장 올바른 결과를 만들어낼 것입니다.', img:'images/major_11.jpg'},
+  {n:'XII', name:'매달린 사람 (The Hanged Man)', keywords:'희생, 관점의 변화, 수용', desc:'지금은 억지로 움직이기보다 멈춰서 세상을 거꾸로 바라볼 때입니다. 기다림 속에서 새로운 통찰을 얻게 될 것입니다.', img:'images/major_12.jpg'},
+  {n:'XIII', name:'죽음 (Death)', keywords:'끝과 시작, 변화, 재탄생', desc:'오래된 것을 놓아주어야 새로운 것이 찾아옵니다. 두려워하지 말고 과거의 껍데기를 벗어던지고 새롭게 태어나세요.', img:'images/major_13.jpg'},
+  {n:'XIV', name:'절제 (Temperance)', keywords:'조화, 타협, 치유', desc:'서로 다른 것들을 조화롭게 섞어야 할 때입니다. 중용의 미덕을 지키며 감정의 평온을 유지하는 것이 중요합니다.', img:'images/major_14.jpg'},
+  {n:'XV', name:'악마 (The Devil)', keywords:'집착, 욕망, 속박', desc:'당신을 구속하고 있는 집착이나 부정적인 습관을 직시하세요. 스스로를 가두고 있는 사슬을 끊어낼 용기가 필요합니다.', img:'images/major_15.jpg'},
+  {n:'XVI', name:'탑 (The Tower)', keywords:'급격한 변화, 붕괴, 깨달음', desc:'갑작스러운 변화가 충격적일 수 있지만, 이는 부실한 기초를 무너뜨리고 진정한 진실 위에 다시 세우기 위한 과정입니다.', img:'images/major_16.jpg'},
+  {n:'XVII', name:'별 (The Star)', keywords:'희망, 영감, 평온', desc:'어둠 속에서도 길을 잃지 않게 해주는 희망의 빛이 보입니다. 당신의 꿈을 믿고 마음의 평화를 유지하세요. 치유의 시간입니다.', img:'images/major_17.jpg'},
+  {n:'XVIII', name:'달 (The Moon)', keywords:'불안, 환상, 무의식', desc:'모든 것이 불투명해 보일 수 있습니다. 혼란스러운 감정에 휘둘리지 말고, 안개가 걷힐 때까지 신중하게 발걸음을 옮기세요.', img:'images/major_18.jpg'},
+  {n:'XIX', name:'태양 (The Sun)', keywords:'긍정, 성공, 기쁨', desc:'축복과 활력이 넘치는 시기입니다. 당신의 존재가 주변을 밝게 비춥니다. 밝은 미래가 약속되어 있으니 마음껏 즐기세요.', img:'images/major_19.jpg'},
+  {n:'XX', name:'심판 (Judgement)', keywords:'부활, 결단, 각성', desc:'과거의 노력이 보상받는 결단의 순간입니다. 새로운 부름에 응답하세요. 당신의 영혼이 한 단계 더 성장하는 시점입니다.', img:'images/major_20.jpg'},
+  {n:'XXI', name:'세계 (The World)', keywords:'완성, 성취, 통합', desc:'하나의 여정이 아름답게 마무리되었습니다. 성취의 기쁨을 누리고, 이제 더 넓은 세상으로 나아갈 준비를 하세요.', img:'images/major_21.jpg'}
+];
+
+// 마이너 아르카나 56장 (단순화 버전)
+const SUITS = [
+  {k:'Wands', ko:'지팡이', kw:'열정, 행동, 에너지'},
+  {k:'Cups', ko:'컵', kw:'감정, 사랑, 관계'},
+  {k:'Swords', ko:'검', kw:'생각, 결단, 지성'},
+  {k:'Disks', ko:'디스크', kw:'물질, 현실, 안정'}
+];
+const FACES = ['Ace','2','3','4','5','6','7','8','9','10','Princess','Prince','Queen','Knight'];
+
+const MINOR_CARDS = [];
+SUITS.forEach(suit => {
+  FACES.forEach(face => {
+    MINOR_CARDS.push({
+      n: face,
+      name: `${suit.ko} ${face}`,
+      keywords: suit.kw,
+      desc: `${suit.ko} 카드는 우리의 ${suit.kw}을(를) 상징합니다. 현재 상황에서 당신의 ${suit.ko} 에너지가 어떻게 흐르고 있는지 살펴보세요.`,
+      img: `images/${suit.k.toLowerCase()}_${face.toLowerCase()}.jpg`
+    });
+  });
+});
+
+const FULL_DECK = [...MAJOR_CARDS, ...MINOR_CARDS];
+
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+let busy=false;
+
+function buildDeck(){
+  const area=document.getElementById('deckArea');
+  area.innerHTML='';
+  const pool=shuffle(FULL_DECK).slice(0,10); 
+  const W=area.offsetWidth||480;
+  const total=pool.length;
+  const cardW=72;
+  const spread=Math.min(W-cardW, total*48);
+  const step=spread/(total-1);
+  
+  pool.forEach((c,i)=>{
+    const slot=document.createElement('div');
+    slot.className='card-slot';
+    const left=(W/2 - spread/2) + i*step - cardW/2;
+    const baseAngle=(i-(total-1)/2)*3.5;
+    const baseY=Math.abs(i-(total-1)/2)*1.5;
+    slot.style.cssText=`left:${left}px;top:${baseY+30}px;transform:rotate(${baseAngle}deg);`;
+    slot.innerHTML=`
+      <div class="card-inner">
+        <div class="card-back"><div class="card-back-pattern"><span>✦</span></div></div>
+        <div class="card-front"><img src="${c.img}" class="cf-img-preview" onerror="this.src='https://via.placeholder.com/72x110?text=Card'"></div>
+      </div>`;
+    slot.onclick=()=>selectCard(c, slot, pool, i);
+    area.appendChild(slot);
+  });
+}
+
+function selectCard(card, slot, pool, idx){
+  if(busy) return;
+  busy=true;
+  document.querySelectorAll('.card-slot').forEach((s,i)=>{
+    if(i!==idx) setTimeout(()=>s.classList.add('fade-out'),i<idx?0:50);
+  });
+  
+  document.getElementById('deckHint').style.opacity='0';
+  document.getElementById('mainTitle').textContent='카드를 뽑았습니다';
+  document.getElementById('mainSub').textContent='운명의 메시지를 확인하세요';
+  
+  setTimeout(()=>{
+    document.getElementById('deckView').style.display='none';
+    document.getElementById('flipStage').style.display='flex';
+    document.getElementById('bfImage').src = card.img;
+
+    setTimeout(()=>{
+      document.getElementById('bigInner').classList.add('flipped');
+      setTimeout(()=>{
+        showReading(card);
+      },800);
+    },600);
+  },500);
+}
+
+// ── API 호출 없이 로컬 데이터를 보여주는 함수 ──
+function showReading(card){
+  const rc = document.getElementById('resultCard');
+  rc.style.display = 'block';
+  
+  document.getElementById('rcTitle').textContent = `✦ ${card.name}`;
+  document.getElementById('rcKeywords').textContent = `핵심 키워드: ${card.keywords}`;
+  
+  const body = document.getElementById('rcBody');
+  body.textContent = '';
+  
+  // 타이핑 효과
+  let i = 0;
+  function type(){
+    if(i < card.desc.length){
+      body.textContent += card.desc[i++];
+      setTimeout(type, 20);
+    }
+  }
+  type();
+}
+
+function restart(){
+  busy=false;
+  location.reload(); // 단순하게 페이지 새로고침으로 초기화
+}
+
+window.addEventListener('load',()=>{ setTimeout(buildDeck,100); });
+</script>
