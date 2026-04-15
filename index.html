@@ -20,7 +20,7 @@
 .title{font-size:17px;font-weight:500;color:#4a3d60;text-align:center;line-height:1.6;margin-bottom:0.4rem;z-index:2;}
 .sub{font-size:13px;color:#a090c0;text-align:center;margin-bottom:1.8rem;z-index:2;}
 
-/* ── 카드 덱 ── */
+/* 카드 덱 */
 .deck-area{
   width:100%;max-width:520px;
   position:relative;
@@ -28,7 +28,7 @@
   z-index:2;
   margin-bottom:1.2rem;
 }
-.deck-hint{text-align:center;font-size:13px;color:#b0a0c8;z-index:2;position:relative; transition: opacity 0.3s;}
+.deck-hint{text-align:center;font-size:13px;color:#b0a0c8;z-index:2;position:relative;transition:opacity 0.3s;}
 
 .card-slot{
   position:absolute;
@@ -85,7 +85,7 @@
   z-index:2;width:100%;
 }
 .big-card-wrap{
-  width:180px;height:280px; /* 그림이 잘 보이도록 크기 확대 */
+  width:180px;height:280px;
   perspective:1000px;
   margin-bottom:1.5rem;
 }
@@ -119,11 +119,11 @@
   background:white;
   border:2px solid rgba(255,255,255,0.9);
   transform:rotateY(180deg);
-  padding:8px; /* 그림만 꽉 차게 보이도록 패딩 조절 */
+  padding:8px;
 }
 .bf-image{width:100%;height:100%;object-fit:cover;border-radius:10px;background:#f5f5f5;}
 
-/* 결과 텍스트 */
+/* 결과 카드 */
 .result-card{
   width:100%;max-width:480px;
   background:rgba(255,255,255,0.85);
@@ -136,12 +136,49 @@
 }
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
 
-.rc-title{font-size:16px;color:#5040a0;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-.rc-keywords{font-size:13px;color:#e86c9a;font-weight:600;margin-bottom:12px;background:rgba(232,108,154,0.1);display:inline-block;padding:4px 10px;border-radius:10px;}
-.rc-body{font-size:15px;color:#4a3d60;line-height:1.8;word-break:keep-all;}
+.rc-title{font-size:16px;color:#5040a0;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.rc-keywords{
+  font-size:12px;color:#9070b0;font-weight:600;
+  background:rgba(180,160,230,0.12);
+  display:inline-block;padding:4px 12px;border-radius:10px;
+  margin-bottom:12px;
+}
+
+/* Today's message 박스 */
+.rc-quote-wrap{
+  background:linear-gradient(135deg,rgba(200,180,255,0.18),rgba(180,160,240,0.08));
+  border:1.5px solid rgba(180,160,240,0.3);
+  border-radius:14px;
+  padding:1rem 1.1rem;
+  margin-bottom:10px;
+}
+.rc-section-label{
+  font-size:10px;font-weight:700;letter-spacing:0.12em;
+  margin-bottom:6px;display:block;
+}
+.rc-quote-label{color:#9070c0;}
+.rc-quote-text{
+  font-size:15px;color:#4a3d60;line-height:1.85;
+  font-style:italic;word-break:keep-all;
+}
+
+/* 한걸음 나아가기 박스 */
+.rc-action-wrap{
+  background:linear-gradient(135deg,rgba(150,220,190,0.18),rgba(130,200,170,0.08));
+  border:1.5px solid rgba(130,200,170,0.35);
+  border-radius:14px;
+  padding:1rem 1.1rem;
+  margin-bottom:12px;
+  display:none;
+  animation:fadeUp 0.5s ease forwards;
+}
+.rc-action-label{color:#4a9a80;}
+.rc-action-text{
+  font-size:14px;color:#2e5c4a;line-height:1.85;word-break:keep-all;
+}
 
 .again-btn{
-  margin-top:1.5rem;width:100%;padding:12px;
+  width:100%;padding:12px;
   border:1.5px solid rgba(180,160,230,0.5);
   border-radius:14px;background:white;
   color:#8070b0;font-size:14px;cursor:pointer;
@@ -172,56 +209,200 @@
     <div class="result-card" id="resultCard">
       <div class="rc-title" id="rcTitle"></div>
       <div class="rc-keywords" id="rcKeywords"></div>
-      <div class="rc-body" id="rcBody"></div>
-      <button class="again-btn" id="againBtn" onclick="restart()">다른 카드 뽑기</button>
+
+      <div class="rc-quote-wrap">
+        <span class="rc-section-label rc-quote-label">✦ TODAY'S MESSAGE</span>
+        <div class="rc-quote-text" id="rcQuote"></div>
+      </div>
+
+      <div class="rc-action-wrap" id="rcActionWrap">
+        <span class="rc-section-label rc-action-label">🌱 한걸음 나아가기</span>
+        <div class="rc-action-text" id="rcAction"></div>
+      </div>
+
+      <button class="again-btn" onclick="restart()">다른 카드 뽑기</button>
     </div>
   </div>
 </div>
 
 <script>
-// 메이저 아르카나 22장
 const MAJOR_CARDS = [
-  {n:'0', name:'바보 (The Fool)', keywords:'자유, 새로운 시작, 순수', desc:'지금은 계산하기보다 당신의 직관을 믿고 첫발을 내디뎌야 할 때입니다. 두려움 없는 마음이 새로운 길을 열어줄 것입니다.', img:'image/major_0.jpg'},
-  {n:'I', name:'마법사 (The Magician)', keywords:'창조력, 의지, 잠재력', desc:'당신은 이미 필요한 모든 도구를 갖추고 있습니다. 당신의 아이디어를 현실로 바꿀 수 있는 강력한 에너지가 집중되는 시기입니다.', img:'image/major_1.jpg'},
-  {n:'II', name:'여사제 (The High Priestess)', keywords:'직관, 지혜, 신비', desc:'잠시 멈춰 내면의 목소리에 귀를 기울이세요. 밖으로 드러난 상황보다 당신이 느끼는 보이지 않는 진실이 더 중요합니다.', img:'image/major_2.jpg'},
-  {n:'III', name:'여황제 (The Empress)', keywords:'풍요, 모성애, 아름다움', desc:'풍요로움과 결실이 함께하는 시기입니다. 당신의 주변을 돌보고 스스로를 사랑하며 마음껏 누리셔도 좋습니다.', img:'image/major_3.jpg'},
-  {n:'IV', name:'황제 (The Emperor)', keywords:'권위, 질서, 리더십', desc:'흔들리지 않는 확신과 질서가 필요한 때입니다. 명확한 계획과 책임감을 가지고 상황을 리드해 나가세요.', img:'image/major_4.jpg'},
-  {n:'V', name:'교황 (The Hierophant)', keywords:'믿음, 전통, 가르침', desc:'혼자 해결하기보다 전통적인 방식이나 신뢰할 수 있는 멘토의 조언을 구하는 것이 큰 도움이 될 것입니다.', img:'image/major_5.jpg'},
-  {n:'VI', name:'연인 (The Lovers)', keywords:'사랑, 조화, 선택', desc:'마음이 이끄는 대로 조화로운 선택을 하세요. 사람과의 관계에서나 중요한 결합에서 긍정적인 에너지가 흐릅니다.', img:'image/major_6.jpg'},
-  {n:'VII', name:'전차 (The Chariot)', keywords:'의지, 전진, 승리', desc:'강력한 추진력이 필요한 시점입니다. 목표를 향해 앞만 보고 달려가세요. 당신의 의지가 승리를 가져다줄 것입니다.', img:'image/major_7.jpg'},
-  {n:'VIII', name:'힘 (Strength)', keywords:'용기, 인내, 부드러운 힘', desc:'진정한 힘은 강압이 아닌 부드러운 인내에서 나옵니다. 내면의 본능을 다스리고 따뜻한 포용력으로 상황을 조율하세요.', img:'image/major_8.jpg'},
-  {n:'IX', name:'은둔자 (The Hermit)', keywords:'성찰, 내면의 빛, 탐구', desc:'세상의 소음을 뒤로하고 혼자만의 시간을 가지세요. 당신이 찾고 있는 해답은 이미 당신의 내면 깊은 곳에 있습니다.', img:'image/major_9.jpg'},
-  {n:'X', name:'운명의 바퀴 (Wheel of Fortune)', keywords:'전환점, 운명, 기회', desc:'변화의 흐름이 찾아왔습니다. 순리에 몸을 맡기세요. 지금 일어나는 변화는 당신을 더 나은 곳으로 이끄는 운명적 흐름입니다.', img:'image/major_10.jpg'},
-  {n:'XI', name:'정의 (Justice)', keywords:'균형, 공정함, 진실', desc:'감정에 치우치기보다 객관적이고 공정하게 판단해야 합니다. 정직한 행동이 가장 올바른 결과를 만들어낼 것입니다.', img:'image/major_11.jpg'},
-  {n:'XII', name:'매달린 사람 (The Hanged Man)', keywords:'희생, 관점의 변화, 수용', desc:'지금은 억지로 움직이기보다 멈춰서 세상을 거꾸로 바라볼 때입니다. 기다림 속에서 새로운 통찰을 얻게 될 것입니다.', img:'image/major_12.jpg'},
-  {n:'XIII', name:'죽음 (Death)', keywords:'끝과 시작, 변화, 재탄생', desc:'오래된 것을 놓아주어야 새로운 것이 찾아옵니다. 두려워하지 말고 과거의 껍데기를 벗어던지고 새롭게 태어나세요.', img:'image/major_13.jpg'},
-  {n:'XIV', name:'절제 (Temperance)', keywords:'조화, 타협, 치유', desc:'서로 다른 것들을 조화롭게 섞어야 할 때입니다. 중용의 미덕을 지키며 감정의 평온을 유지하는 것이 중요합니다.', img:'image/major_14.jpg'},
-  {n:'XV', name:'악마 (The Devil)', keywords:'집착, 욕망, 속박', desc:'당신을 구속하고 있는 집착이나 부정적인 습관을 직시하세요. 스스로를 가두고 있는 사슬을 끊어낼 용기가 필요합니다.', img:'image/major_15.jpg'},
-  {n:'XVI', name:'탑 (The Tower)', keywords:'급격한 변화, 붕괴, 깨달음', desc:'갑작스러운 변화가 충격적일 수 있지만, 이는 부실한 기초를 무너뜨리고 진정한 진실 위에 다시 세우기 위한 과정입니다.', img:'image/major_16.jpg'},
-  {n:'XVII', name:'별 (The Star)', keywords:'희망, 영감, 평온', desc:'어둠 속에서도 길을 잃지 않게 해주는 희망의 빛이 보입니다. 당신의 꿈을 믿고 마음의 평화를 유지하세요. 치유의 시간입니다.', img:'image/major_17.jpg'},
-  {n:'XVIII', name:'달 (The Moon)', keywords:'불안, 환상, 무의식', desc:'모든 것이 불투명해 보일 수 있습니다. 혼란스러운 감정에 휘둘리지 말고, 안개가 걷힐 때까지 신중하게 발걸음을 옮기세요.', img:'image/major_18.jpg'},
-  {n:'XIX', name:'태양 (The Sun)', keywords:'긍정, 성공, 기쁨', desc:'축복과 활력이 넘치는 시기입니다. 당신의 존재가 주변을 밝게 비춥니다. 밝은 미래가 약속되어 있으니 마음껏 즐기세요.', img:'image/major_19.jpg'},
-  {n:'XX', name:'심판 (Judgement)', keywords:'부활, 결단, 각성', desc:'과거의 노력이 보상받는 결단의 순간입니다. 새로운 부름에 응답하세요. 당신의 영혼이 한 단계 더 성장하는 시점입니다.', img:'image/major_20.jpg'},
-  {n:'XXI', name:'세계 (The World)', keywords:'완성, 성취, 통합', desc:'하나의 여정이 아름답게 마무리되었습니다. 성취의 기쁨을 누리고, 이제 더 넓은 세상으로 나아갈 준비를 하세요.', img:'image/major_21.jpg'}
+  {n:'0',  name:'바보 (The Fool)',               keywords:'자유, 새로운 시작, 순수',
+   quote:'모험은 계산 없이 시작될 때 가장 순수하다.',
+   action:'오늘은 그냥 걸어봐요. 어디든, 이유 없이.',
+   img:'image/major_0.jpg'},
+  {n:'I',  name:'마법사 (The Magician)',          keywords:'창조력, 의지, 잠재력',
+   quote:'이미 손 안에 있다. 쓰기만 하면 된다.',
+   action:'지금 생각나는 그것, 오늘 딱 하나만 해봐요.',
+   img:'image/major_1.jpg'},
+  {n:'II', name:'여사제 (The High Priestess)',    keywords:'직관, 지혜, 신비',
+   quote:'가장 조용한 목소리가 가장 깊은 진실을 말한다.',
+   action:'잠깐 눈 감고, 지금 내 마음이 뭐라 하는지 들어봐요.',
+   img:'image/major_2.jpg'},
+  {n:'III',name:'여황제 (The Empress)',           keywords:'풍요, 모성애, 아름다움',
+   quote:'돌보는 것에서 풍요는 시작된다.',
+   action:'물 한 잔, 어깨 한 번 펴기. 그것만으로도 충분해요.',
+   img:'image/major_3.jpg'},
+  {n:'IV', name:'황제 (The Emperor)',             keywords:'권위, 질서, 리더십',
+   quote:'흔들리지 않는 중심이 있는 곳에 신뢰가 모인다.',
+   action:'오늘 결정한 것 하나, 흔들리지 않고 지켜봐요.',
+   img:'image/major_4.jpg'},
+  {n:'V',  name:'교황 (The Hierophant)',          keywords:'믿음, 전통, 가르침',
+   quote:'혼자 짊어지는 것만이 용기가 아니다. 나누는 것도 용기다.',
+   action:'혼자 안고 있는 것 중 하나, 가까운 사람에게 살짝 꺼내봐요.',
+   img:'image/major_5.jpg'},
+  {n:'VI', name:'연인 (The Lovers)',              keywords:'사랑, 조화, 선택',
+   quote:'진심 어린 선택은 결과보다 먼저 의미를 만든다.',
+   action:'오늘 하나만큼은 그냥 내가 좋아하는 것으로 골라봐요.',
+   img:'image/major_6.jpg'},
+  {n:'VII',name:'전차 (The Chariot)',             keywords:'의지, 전진, 승리',
+   quote:'방향이 정해지면 속도는 따라온다.',
+   action:'지금 가고 싶은 방향, 한 문장으로 적어봐요.',
+   img:'image/major_7.jpg'},
+  {n:'VIII',name:'힘 (Strength)',                keywords:'용기, 인내, 부드러운 힘',
+   quote:'부드러움이 단단함을 이긴다.',
+   action:'오늘 딱 한 번, 강하게 말하고 싶을 때 부드럽게 바꿔봐요.',
+   img:'image/major_8.jpg'},
+  {n:'IX', name:'은둔자 (The Hermit)',            keywords:'성찰, 내면의 빛, 탐구',
+   quote:'혼자 걷는 길에서 만나는 자신이 가장 솔직한 스승이다.',
+   action:'핸드폰 잠깐 내려놓고 나만의 시간 10분 가져봐요.',
+   img:'image/major_9.jpg'},
+  {n:'X',  name:'운명의 바퀴 (Wheel of Fortune)',keywords:'전환점, 운명, 기회',
+   quote:'바퀴는 돈다. 멈추는 것은 없다.',
+   action:'소리 내어 말해봐요. "이것도 지나간다."',
+   img:'image/major_10.jpg'},
+  {n:'XI', name:'정의 (Justice)',                keywords:'균형, 공정함, 진실',
+   quote:'두려움 없이 진실을 마주하는 것이 가장 단단한 자유다.',
+   action:'자꾸 눈길을 피했던 것 하나, 오늘 잠깐 바라봐요.',
+   img:'image/major_11.jpg'},
+  {n:'XII',name:'매달린 사람 (The Hanged Man)',   keywords:'희생, 관점의 변화, 수용',
+   quote:'거꾸로 매달려야만 보이는 세상이 있다.',
+   action:'그 사람 자리에 딱 1분만 앉아봐요.',
+   img:'image/major_12.jpg'},
+  {n:'XIII',name:'죽음 (Death)',                 keywords:'끝과 시작, 변화, 재탄생',
+   quote:'끝이 없는 시작은 없다.',
+   action:'더 이상 필요 없는 것 하나, 오늘 조용히 내려놓아봐요.',
+   img:'image/major_13.jpg'},
+  {n:'XIV',name:'절제 (Temperance)',             keywords:'조화, 타협, 치유',
+   quote:'서두르지 않는 것도 하나의 지혜다.',
+   action:'오늘 하나만 해도 충분해요. 그 말 한 번 해봐요.',
+   img:'image/major_14.jpg'},
+  {n:'XV', name:'악마 (The Devil)',              keywords:'집착, 욕망, 속박',
+   quote:'사슬을 만든 손이 그것을 끊을 수도 있다.',
+   action:'늘 하던 것 중 하나, 오늘은 다르게 해봐요. 딱 한 번.',
+   img:'image/major_15.jpg'},
+  {n:'XVI',name:'탑 (The Tower)',               keywords:'급격한 변화, 붕괴, 깨달음',
+   quote:'무너진 자리가 더 단단한 토대가 된다.',
+   action:'무너진 자리에서 다시 세울 것 하나만 생각해봐요.',
+   img:'image/major_16.jpg'},
+  {n:'XVII',name:'별 (The Star)',               keywords:'희망, 영감, 평온',
+   quote:'어둠은 별을 지우지 못한다.',
+   action:'오늘 밤 하늘 한 번 올려다봐요. 별이 없어도 괜찮아요.',
+   img:'image/major_17.jpg'},
+  {n:'XVIII',name:'달 (The Moon)',              keywords:'불안, 환상, 무의식',
+   quote:'안개 속에서도 한 걸음은 내딛을 수 있다.',
+   action:'불안한 것들 다 적어봐요. 그중 내가 할 수 있는 것 하나에만 동그라미.',
+   img:'image/major_18.jpg'},
+  {n:'XIX',name:'태양 (The Sun)',               keywords:'긍정, 성공, 기쁨',
+   quote:'빛나는 것은 숨길 수 없다.',
+   action:'오늘 잘한 것 하나, 소리 내어 스스로 칭찬해봐요.',
+   img:'image/major_19.jpg'},
+  {n:'XX', name:'심판 (Judgement)',             keywords:'부활, 결단, 각성',
+   quote:'부름이 들릴 때, 일어서는 것만으로 충분하다.',
+   action:'오래 미뤄온 연락 하나, 오늘 짧게라도 해봐요.',
+   img:'image/major_20.jpg'},
+  {n:'XXI',name:'세계 (The World)',             keywords:'완성, 성취, 통합',
+   quote:'하나의 완성이 다음 여정의 문을 연다.',
+   action:'최근 마무리한 것 하나 적고, 스스로 축하해봐요.',
+   img:'image/major_21.jpg'}
 ];
 
-// 마이너 아르카나 56장 (단순화 버전)
+// 마이너 아르카나 카드별 quote/action
+const MINOR_DATA = {
+  Wands: {
+    'Ace':     {quote:'불꽃은 작아도 충분히 타오를 수 있다.',                          action:'딱 5분만요. 시작이 전부예요.'},
+    '2':       {quote:'원하는 것을 품은 것만으로 이미 여정은 시작되었다.',              action:'원하는 것, 오늘 한 문장으로 적어봐요.'},
+    '3':       {quote:'멀리 내다보는 눈이 더 멀리 나아가게 한다.',                     action:'한 발 앞을 내다보고 다음 단계 하나만 적어봐요.'},
+    '4':       {quote:'쉬는 것도 길을 걷는 것이다.',                                  action:'아무것도 안 하는 15분, 오늘 나에게 선물해봐요.'},
+    '5':       {quote:'부딪히는 곳에서 더 단단해진다.',                               action:'마음에 걸리는 사람에게 먼저 한마디 건네봐요.'},
+    '6':       {quote:'앞서 걷는 이는 혼자이지 않다.',                                action:'오늘의 작은 승리, 한 사람에게 털어놓아봐요.'},
+    '7':       {quote:'물러서지 않는 것만으로도 이긴다.',                              action:'포기하고 싶었던 것, 오늘 하루만 더 해봐요.'},
+    '8':       {quote:'기회는 준비된 손에만 잡힌다.',                                 action:'지금 바로 할 수 있는 것, 지금 해버려요.'},
+    '9':       {quote:'끝까지 버티는 자가 마지막을 본다.',                             action:'버텨온 나에게 "잘 버텼어" 세 번만 말해봐요.'},
+    '10':      {quote:'무거운 짐이 사명일 때, 그 무게는 의미가 된다.',                 action:'지금 짐 중 하나, 다른 사람에게 부탁해봐요.'},
+    'Princess':{quote:'날카로운 분석이 새로운 길을 연다.',                             action:'지금 하는 일에서 개선할 점 하나만 찾아봐요.'},
+    'Prince':  {quote:'집중하는 것이 가장 빠른 길이다.',                              action:'오늘 하나의 일에만 집중하는 시간을 정해봐요.'},
+    'Queen':   {quote:'희망을 잃지 않는 것이 가장 조용한 용기다.',                     action:'"그래도 된다, 그리고 계속한다" 오늘 한 번 말해봐요.'},
+    'Knight':  {quote:'열정은 방향을 만날 때 힘이 된다.',                             action:'열정이 식기 전에 지금 당장 한 걸음만 내딛어봐요.'}
+  },
+  Cups: {
+    'Ace':     {quote:'새로운 감정이 찾아올 때 두려움보다 설렘이 먼저여도 된다.',       action:'오늘 설레는 것 하나, 잠깐 상상해봐요.'},
+    '2':       {quote:'진실한 만남은 서로를 더 온전하게 만든다.',                      action:'소중한 사람에게 짧은 안부 한 마디 보내봐요.'},
+    '3':       {quote:'기쁨은 나눌수록 커진다.',                                      action:'오늘 기쁜 일 하나, 누군가에게 나눠봐요.'},
+    '4':       {quote:'한계를 아는 것이 새로운 가능성의 시작이다.',                    action:'"이건 내 한계야" 인정하고 오늘 하나는 멈춰봐요.'},
+    '5':       {quote:'잃은 것을 보기 전에, 남은 것을 먼저 보라.',                    action:'아직 남아있는 것 세 가지만 적어봐요.'},
+    '6':       {quote:'순수한 마음은 언제나 돌아갈 수 있는 집이다.',                   action:'어린 시절 좋아했던 것 하나, 오늘 다시 꺼내봐요.'},
+    '7':       {quote:'꿈과 환상 사이, 지금 이 자리가 가장 실재한다.',                 action:'지금 눈에 보이고, 들리고, 느껴지는 것에 잠깐 머물러봐요.'},
+    '8':       {quote:'떠나는 용기가 더 나은 곳으로 이끈다.',                          action:'더 이상 나에게 맞지 않는 것 하나, 오늘 살며시 내려놓아봐요.'},
+    '9':       {quote:'바라던 것을 얻었을 때 온전히 기뻐하는 것도 연습이다.',           action:'바라던 것이 이루어진 순간을 잠깐 상상하며 미소 지어봐요.'},
+    '10':      {quote:'충만한 마음이 가장 큰 재산이다.',                               action:'지금 마음이 따뜻한 것 하나를 한 문장으로 기록해봐요.'},
+    'Princess':{quote:'조화와 봉사의 정신이 세상을 더 밝게 한다.',                     action:'오늘 누군가를 위해 작은 것 하나 해봐요.'},
+    'Prince':  {quote:'천천히 흐르는 물이 바위를 깎는다.',                             action:'급하지 않은 것 하나를 오늘은 일부러 천천히 해봐요.'},
+    'Queen':   {quote:'타인의 아픔을 느끼는 것이 세상을 치유하는 힘이다.',              action:'오늘 한 사람의 이야기, 끝까지 다 들어봐요.'},
+    'Knight':  {quote:'감정에 솔직한 것이 가장 설득력 있는 언어다.',                   action:'지금 느끼는 감정, 꾸미지 않고 한 사람에게 말해봐요.'}
+  },
+  Swords: {
+    'Ace':     {quote:'명확한 한 마디가 긴 오해를 끊는다.',                            action:'오해가 쌓인 것 하나, 오늘 말로 살짝 풀어봐요.'},
+    '2':       {quote:'멈추는 것도 결단이다.',                                         action:'결정을 잠깐 멈추고, 충분히 생각하는 시간을 가져봐요.'},
+    '3':       {quote:'슬픔을 외면하지 않는 것이 치유의 시작이다.',                    action:'슬픔이 있다면 오늘은 그냥 슬퍼해도 돼요.'},
+    '4':       {quote:'쉬는 전사가 더 오래 싸운다.',                                   action:'오늘 일정 중 하나를 지우고 쉬어봐요.'},
+    '5':       {quote:'상처가 깊을수록 회복된 자리는 더 단단하다.',                    action:'상처받은 일, 종이에 쓰고 조용히 접어봐요.'},
+    '6':       {quote:'시련의 끝은 반드시 다른 강가에 닿는다.',                        action:'"이 시련도 끝이 있다" 적어서 잘 보이는 곳에 붙여봐요.'},
+    '7':       {quote:'지혜는 새로운 각도에서 시작된다.',                              action:'잘 모르는 것 하나, 오늘 새로 배워봐요.'},
+    '8':       {quote:'두려움을 알면서도 나아가는 것이 진짜 용기다.',                  action:'두려운 것을 적고, 그래도 할 수 있는 이유 하나 써봐요.'},
+    '9':       {quote:'밤이 가장 길게 느껴질 때 새벽이 가장 가깝다.',                  action:'자기 전 걱정 목록 적고, 접어서 서랍에 넣어봐요.'},
+    '10':      {quote:'바닥을 딛고 서야 다시 일어설 수 있다.',                         action:'"여기서만 올라갈 수 있다" 소리 내어 말해봐요.'},
+    'Princess':{quote:'엄격한 준비가 예상치 못한 어려움을 막는다.',                    action:'오늘 한 가지, 충분히 준비해봐요.'},
+    'Prince':  {quote:'새로운 생각은 언제나 열린 마음에서 온다.',                      action:'오늘의 문제 하나를 전혀 다른 방법으로 접근해봐요.'},
+    'Queen':   {quote:'\'아니오\'라고 말하는 것이 때로 가장 큰 사랑이다.',             action:'오늘 하나의 경계를 부드럽지만 명확하게 지켜봐요.'},
+    'Knight':  {quote:'날카로운 판단도 따뜻한 마음 위에서 빛난다.',                    action:'판단하기 전에 "이 사람은 왜 이랬을까?" 한 번만 생각해봐요.'}
+  },
+  Disks: {
+    'Ace':     {quote:'땅에 씨앗을 심는 것이 수확의 시작이다.',                        action:'오늘 작은 것 하나라도 실제로 해봐요.'},
+    '2':       {quote:'흔들리면서도 균형을 찾는 것이 삶의 리듬이다.',                  action:'균형이 필요한 두 가지를 적고 하나씩 조율해봐요.'},
+    '3':       {quote:'함께 만든 것이 가장 오래 남는다.',                              action:'함께 일하는 사람 한 명에게 감사 한마디 전해봐요.'},
+    '4':       {quote:'가진 것을 지키는 것도 하나의 지혜다.',                          action:'지금 소중한 것 세 가지, 적어봐요.'},
+    '5':       {quote:'결핍은 더 간절하게 만들고, 간절함은 더 깊이 성장하게 한다.',    action:'부족한 것 대신, 지금 있는 것으로 할 수 있는 것 찾아봐요.'},
+    '6':       {quote:'흘려보낼 수 있는 것이 진짜 풍요다.',                            action:'오늘 나눌 수 있는 것 하나, 실제로 나눠봐요.'},
+    '7':       {quote:'기다리는 농부는 알고 있다. 열매는 때가 되면 익는다는 것을.',    action:'지금까지 해온 것을 돌아보고 한 줄 기록해봐요.'},
+    '8':       {quote:'작은 것에 정성을 다하는 손이 큰 것을 만든다.',                  action:'오늘 작은 것 하나에 정성을 다해봐요.'},
+    '9':       {quote:'홀로 이룬 풍요는 통찰 위에 세워진다.',                          action:'혼자 이룬 것 하나를 스스로 인정하고 적어봐요.'},
+    '10':      {quote:'풍요는 쌓는 것이 아니라 흐르는 것이다.',                        action:'지금 풍요로운 것 하나를 의식적으로 느껴봐요.'},
+    'Princess':{quote:'확실한 준비를 갖추는 것이 명품 인생을 만든다.',                 action:'오늘 하나의 준비를 꼼꼼하게 해봐요.'},
+    'Prince':  {quote:'서두르지 않는 성실함이 결국 도착한다.',                         action:'오늘 서두르지 않고 한 가지를 끝까지 마무리해봐요.'},
+    'Queen':   {quote:'나눌 줄 아는 것이 가장 큰 풍요다.',                             action:'오늘 한 사람에게 작은 것이라도 나눠줘봐요.'},
+    'Knight':  {quote:'고독한 노력이 가장 단단한 열매를 맺는다.',                      action:'아무도 보지 않아도 오늘 해야 할 것 하나, 묵묵히 해봐요.'}
+  }
+};
+
 const SUITS = [
   {k:'Wands', ko:'지팡이', kw:'열정, 행동, 에너지'},
-  {k:'Cups', ko:'컵', kw:'감정, 사랑, 관계'},
-  {k:'Swords', ko:'검', kw:'생각, 결단, 지성'},
-  {k:'Disks', ko:'디스크', kw:'물질, 현실, 안정'}
+  {k:'Cups',  ko:'컵',    kw:'감정, 사랑, 관계'},
+  {k:'Swords',ko:'검',    kw:'생각, 결단, 지성'},
+  {k:'Disks', ko:'디스크',kw:'물질, 현실, 안정'}
 ];
 const FACES = ['Ace','2','3','4','5','6','7','8','9','10','Princess','Prince','Queen','Knight'];
 
 const MINOR_CARDS = [];
 SUITS.forEach(suit => {
   FACES.forEach(face => {
+    const d = MINOR_DATA[suit.k][face];
     MINOR_CARDS.push({
       n: face,
       name: `${suit.ko} ${face}`,
       keywords: suit.kw,
-      desc: `${suit.ko} 카드는 우리의 ${suit.kw}을(를) 상징합니다. 현재 상황에서 당신의 ${suit.ko} 에너지가 어떻게 흐르고 있는지 살펴보세요.`,
+      quote: d.quote,
+      action: d.action,
       img: `image/${suit.k.toLowerCase()}_${face.toLowerCase()}.jpg`
     });
   });
@@ -235,86 +416,99 @@ function shuffle(arr){
   return a;
 }
 
-let busy=false;
+let busy = false;
 
 function buildDeck(){
-  const area=document.getElementById('deckArea');
-  area.innerHTML='';
-  const pool=shuffle(FULL_DECK).slice(0,10); 
-  const W=area.offsetWidth||480;
-  const total=pool.length;
-  const cardW=72;
-  const spread=Math.min(W-cardW, total*48);
-  const step=spread/(total-1);
-  
-  pool.forEach((c,i)=>{
-    const slot=document.createElement('div');
-    slot.className='card-slot';
-    const left=(W/2 - spread/2) + i*step - cardW/2;
-    const baseAngle=(i-(total-1)/2)*3.5;
-    const baseY=Math.abs(i-(total-1)/2)*1.5;
-    slot.style.cssText=`left:${left}px;top:${baseY+30}px;transform:rotate(${baseAngle}deg);`;
-    slot.innerHTML=`
+  const area = document.getElementById('deckArea');
+  area.innerHTML = '';
+  const pool = shuffle(FULL_DECK).slice(0, 10);
+  const W = area.offsetWidth || 480;
+  const total = pool.length;
+  const cardW = 72;
+  const spread = Math.min(W - cardW, total * 48);
+  const step = spread / (total - 1);
+
+  pool.forEach((c, i) => {
+    const slot = document.createElement('div');
+    slot.className = 'card-slot';
+    const left = (W/2 - spread/2) + i*step - cardW/2;
+    const baseAngle = (i - (total-1)/2) * 3.5;
+    const baseY = Math.abs(i - (total-1)/2) * 1.5;
+    slot.style.cssText = `left:${left}px;top:${baseY+30}px;transform:rotate(${baseAngle}deg);`;
+    slot.innerHTML = `
       <div class="card-inner">
         <div class="card-back"><div class="card-back-pattern"><span>✦</span></div></div>
         <div class="card-front"><img src="${c.img}" class="cf-img-preview" onerror="this.src='https://via.placeholder.com/72x110?text=Card'"></div>
       </div>`;
-    slot.onclick=()=>selectCard(c, slot, pool, i);
+    slot.onclick = () => selectCard(c, slot, pool, i);
     area.appendChild(slot);
   });
 }
 
 function selectCard(card, slot, pool, idx){
   if(busy) return;
-  busy=true;
-  document.querySelectorAll('.card-slot').forEach((s,i)=>{
-    if(i!==idx) setTimeout(()=>s.classList.add('fade-out'),i<idx?0:50);
+  busy = true;
+
+  document.querySelectorAll('.card-slot').forEach((s, i) => {
+    if(i !== idx) setTimeout(() => s.classList.add('fade-out'), i < idx ? 0 : 50);
   });
-  
-  document.getElementById('deckHint').style.opacity='0';
-  document.getElementById('mainTitle').textContent='카드를 뽑았습니다';
-  document.getElementById('mainSub').textContent='운명의 메시지를 확인하세요';
-  
-  setTimeout(()=>{
-    document.getElementById('deckView').style.display='none';
-    document.getElementById('flipStage').style.display='flex';
+
+  document.getElementById('deckHint').style.opacity = '0';
+  document.getElementById('mainTitle').textContent = '카드를 뽑았습니다';
+  document.getElementById('mainSub').textContent = '오늘의 메시지를 확인하세요';
+
+  setTimeout(() => {
+    document.getElementById('deckView').style.display = 'none';
+    document.getElementById('flipStage').style.display = 'flex';
     document.getElementById('bfImage').src = card.img;
 
-    setTimeout(()=>{
+    setTimeout(() => {
       document.getElementById('bigInner').classList.add('flipped');
-      setTimeout(()=>{
-        showReading(card);
-      },800);
-    },600);
-  },500);
+      setTimeout(() => { showReading(card); }, 800);
+    }, 600);
+  }, 500);
 }
 
-// ── API 호출 없이 로컬 데이터를 보여주는 함수 ──
 function showReading(card){
   const rc = document.getElementById('resultCard');
   rc.style.display = 'block';
-  
+
   document.getElementById('rcTitle').textContent = `✦ ${card.name}`;
-  document.getElementById('rcKeywords').textContent = `핵심 키워드: ${card.keywords}`;
-  
-  const body = document.getElementById('rcBody');
-  body.textContent = '';
-  
-  // 타이핑 효과
+  document.getElementById('rcKeywords').textContent = `키워드  ${card.keywords}`;
+
+  // Today's message 타이핑
+  const quoteEl = document.getElementById('rcQuote');
+  quoteEl.textContent = '';
   let i = 0;
-  function type(){
-    if(i < card.desc.length){
-      body.textContent += card.desc[i++];
-      setTimeout(type, 20);
+  function typeQuote(){
+    if(i < card.quote.length){
+      quoteEl.textContent += card.quote[i++];
+      setTimeout(typeQuote, 28);
+    } else {
+      // 타이핑 완료 후 한걸음 나아가기 등장
+      setTimeout(() => {
+        const actionWrap = document.getElementById('rcActionWrap');
+        actionWrap.style.display = 'block';
+        const actionEl = document.getElementById('rcAction');
+        actionEl.textContent = '';
+        let j = 0;
+        function typeAction(){
+          if(j < card.action.length){
+            actionEl.textContent += card.action[j++];
+            setTimeout(typeAction, 22);
+          }
+        }
+        typeAction();
+      }, 300);
     }
   }
-  type();
+  typeQuote();
 }
 
 function restart(){
-  busy=false;
-  location.reload(); // 단순하게 페이지 새로고침으로 초기화
+  busy = false;
+  location.reload();
 }
 
-window.addEventListener('load',()=>{ setTimeout(buildDeck,100); });
+window.addEventListener('load', () => { setTimeout(buildDeck, 100); });
 </script>
