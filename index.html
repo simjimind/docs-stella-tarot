@@ -2,23 +2,23 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 .scene{
   min-height:540px;
-  background:linear-gradient(145deg,#fde8f0 0%,#ede8fd 45%,#e8f0fd 100%);
+  background:linear-gradient(160deg,#2C1F14 0%,#5C3D2A 50%,#7A5540 100%);
   border-radius:20px;
   font-family:sans-serif;
   display:flex;flex-direction:column;align-items:center;
   padding:2rem 1rem 2.5rem;
   position:relative;overflow:hidden;
 }
-.scene::before{content:'';position:absolute;top:-80px;right:-60px;width:220px;height:220px;border-radius:50%;background:rgba(200,180,255,0.2);}
-.scene::after{content:'';position:absolute;bottom:-50px;left:-50px;width:180px;height:180px;border-radius:50%;background:rgba(180,210,255,0.2);}
+.scene::before{content:'';position:absolute;top:-80px;right:-60px;width:220px;height:220px;border-radius:50%;background:rgba(212,168,130,0.12);}
+.scene::after{content:'';position:absolute;bottom:-50px;left:-50px;width:180px;height:180px;border-radius:50%;background:rgba(122,140,110,0.1);}
 
 .top-badge{
-  font-size:11px;letter-spacing:0.12em;color:#9a80c0;font-weight:600;
-  background:rgba(255,255,255,0.6);border-radius:20px;padding:5px 14px;
-  margin-bottom:1rem;z-index:2;
+  font-size:11px;letter-spacing:0.12em;color:#D4A882;font-weight:600;
+  background:rgba(255,255,255,0.1);border-radius:20px;padding:5px 14px;
+  margin-bottom:1rem;z-index:2;border:1px solid rgba(212,168,130,0.3);
 }
-.title{font-size:17px;font-weight:500;color:#4a3d60;text-align:center;line-height:1.6;margin-bottom:0.4rem;z-index:2;}
-.sub{font-size:13px;color:#a090c0;text-align:center;margin-bottom:1.8rem;z-index:2;}
+.title{font-size:17px;font-weight:500;color:#FAF7F2;text-align:center;line-height:1.6;margin-bottom:0.4rem;z-index:2;}
+.sub{font-size:13px;color:rgba(250,247,242,0.6);text-align:center;margin-bottom:1.8rem;z-index:2;}
 
 /* 카드 덱 */
 .deck-area{
@@ -28,7 +28,7 @@
   z-index:2;
   margin-bottom:1.2rem;
 }
-.deck-hint{text-align:center;font-size:13px;color:#b0a0c8;z-index:2;position:relative;transition:opacity 0.3s;}
+.deck-hint{text-align:center;font-size:13px;color:rgba(250,247,242,0.55);z-index:2;position:relative;transition:opacity 0.3s;}
 
 .card-slot{
   position:absolute;
@@ -55,9 +55,9 @@
   display:flex;flex-direction:column;align-items:center;justify-content:center;
 }
 .card-back{
-  background:linear-gradient(160deg,#c8b0f0,#a0b0f8,#b0d0f0);
-  border:1.5px solid rgba(255,255,255,0.7);
-  box-shadow:0 4px 16px rgba(160,140,220,0.25);
+  background:linear-gradient(160deg,#5C3D2A,#8C6148,#B07D62);
+  border:1.5px solid rgba(212,168,130,0.5);
+  box-shadow:0 4px 16px rgba(92,61,42,0.4);
 }
 .card-back-pattern{
   width:52px;height:80px;
@@ -104,8 +104,8 @@
   box-shadow:0 12px 40px rgba(160,140,220,0.3);
 }
 .big-back{
-  background:linear-gradient(160deg,#c8b0f0,#a0b0f8,#b0d0f0);
-  border:2px solid rgba(255,255,255,0.7);
+  background:linear-gradient(160deg,#5C3D2A,#8C6148,#B07D62);
+  border:2px solid rgba(212,168,130,0.5);
 }
 .big-back-inner{
   width:140px;height:220px;
@@ -126,9 +126,9 @@
 /* 결과 카드 */
 .result-card{
   width:100%;max-width:480px;
-  background:rgba(255,255,255,0.85);
-  backdrop-filter:blur(10px);
-  border:1.5px solid rgba(220,210,250,0.7);
+  background:rgba(44,31,20,0.7);
+  backdrop-filter:blur(12px);
+  border:1.5px solid rgba(212,168,130,0.25);
   border-radius:20px;
   padding:1.5rem;
   display:none;
@@ -136,18 +136,18 @@
 }
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
 
-.rc-title{font-size:16px;color:#5040a0;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.rc-title{font-size:16px;color:#D4A882;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
 .rc-keywords{
-  font-size:12px;color:#9070b0;font-weight:600;
-  background:rgba(180,160,230,0.12);
+  font-size:12px;color:rgba(250,247,242,0.6);font-weight:600;
+  background:rgba(212,168,130,0.15);
   display:inline-block;padding:4px 12px;border-radius:10px;
   margin-bottom:12px;
 }
 
 /* Today's message 박스 */
 .rc-quote-wrap{
-  background:linear-gradient(135deg,rgba(200,180,255,0.18),rgba(180,160,240,0.08));
-  border:1.5px solid rgba(180,160,240,0.3);
+  background:rgba(255,255,255,0.06);
+  border:1.5px solid rgba(212,168,130,0.3);
   border-radius:14px;
   padding:1rem 1.1rem;
   margin-bottom:10px;
@@ -156,35 +156,36 @@
   font-size:10px;font-weight:700;letter-spacing:0.12em;
   margin-bottom:6px;display:block;
 }
-.rc-quote-label{color:#9070c0;}
+.rc-quote-label{color:#D4A882;}
 .rc-quote-text{
-  font-size:15px;color:#4a3d60;line-height:1.85;
+  font-size:15px;color:#FAF7F2;line-height:1.85;
   font-style:italic;word-break:keep-all;
 }
 
 /* 한걸음 나아가기 박스 */
 .rc-action-wrap{
-  background:linear-gradient(135deg,rgba(150,220,190,0.18),rgba(130,200,170,0.08));
-  border:1.5px solid rgba(130,200,170,0.35);
+  background:rgba(122,140,110,0.15);
+  border:1.5px solid rgba(168,184,156,0.35);
   border-radius:14px;
   padding:1rem 1.1rem;
   margin-bottom:12px;
   display:none;
   animation:fadeUp 0.5s ease forwards;
 }
-.rc-action-label{color:#4a9a80;}
+.rc-action-label{color:#A8B89C;}
 .rc-action-text{
-  font-size:14px;color:#2e5c4a;line-height:1.85;word-break:keep-all;
+  font-size:14px;color:rgba(250,247,242,0.85);line-height:1.85;word-break:keep-all;
 }
 
 .again-btn{
   width:100%;padding:12px;
-  border:1.5px solid rgba(180,160,230,0.5);
-  border-radius:14px;background:white;
-  color:#8070b0;font-size:14px;cursor:pointer;
+  border:1.5px solid rgba(212,168,130,0.4);
+  border-radius:14px;
+  background:rgba(255,255,255,0.06);
+  color:#D4A882;font-size:14px;cursor:pointer;
   transition:all 0.2s;
 }
-.again-btn:hover{background:rgba(180,160,230,0.1);transform:translateY(-2px);}
+.again-btn:hover{background:rgba(212,168,130,0.15);transform:translateY(-2px);}
 </style>
 
 <div class="scene" id="scene">
