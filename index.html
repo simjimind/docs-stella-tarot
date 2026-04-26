@@ -4,529 +4,1454 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>STELLA TAROT — 나의 길, 나의 인생</title>
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="✦ STELLA TAROT — 나의 길, 나의 인생">
-  <meta property="og:description" content="마음이 끌리는 카드 한 장을 뽑아보세요. 오늘의 메시지와 한걸음 나아가기가 기다립니다.">
-  <meta property="og:image" content="https://simjimind.github.io/docs-stella-tarot/image/homdpage.png">
-  <meta property="og:url" content="https://simjimind.github.io/docs-stella-tarot/">
-  <meta property="og:site_name" content="심리상담연구소 심지">
-  <meta name="twitter:card" content="summary_large_image">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #F5F1EA;
+      --cream-dark: #E8E2D8;
+      --charcoal: #2E2A24;
+      --charcoal-mid: #5A5550;
+      --charcoal-light: #8A8480;
+      --gold: #B8956A;
+      --gold-light: #D4AE82;
+      --gold-pale: #F0E4D0;
+      --sage: #7A9070;
+      --sage-light: #A8BEA0;
+      --sage-pale: #E4EDE0;
+      --border: rgba(184,149,106,0.2);
+      --white: #FDFBF8;
+    }
+
+    html, body {
+      min-height: 100vh;
+      background: var(--cream);
+    }
+    /* 은은한 배경 텍스처 */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(184,149,106,0.06) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(122,144,112,0.06) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.3) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .app { position: relative; z-index: 1; }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Noto Sans KR', sans-serif;
+      padding: 0;
+    }
+
+    /* ── 전체 앱 컨테이너 ── */
+    .app {
+      width: 100%;
+      max-width: 560px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* ── 화면 공통 ── */
+    .screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 48px 24px 40px;
+      animation: fadeIn 0.6s ease forwards;
+    }
+    .screen.active { display: flex; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── 공통 로고/배지 ── */
+    .top-mark {
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      color: var(--gold);
+      font-weight: 500;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .simji-mark {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      color: var(--charcoal-light);
+      text-align: center;
+      margin-top: auto;
+      padding-top: 32px;
+    }
+
+    /* ── 버튼 ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 32px;
+      border-radius: 40px;
+      border: none;
+      cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      transition: all 0.25s ease;
+    }
+    .btn-primary {
+      background: var(--charcoal);
+      color: var(--white);
+    }
+    .btn-primary:hover { background: #1a1814; transform: translateY(-2px); }
+    .btn-outline {
+      background: transparent;
+      color: var(--charcoal-mid);
+      border: 1.5px solid var(--cream-dark);
+    }
+    .btn-outline:hover { border-color: var(--charcoal-mid); transform: translateY(-2px); }
+    .btn-gold {
+      background: var(--gold);
+      color: white;
+    }
+    .btn-gold:hover { background: #a07e58; transform: translateY(-2px); }
+
+    /* ════════════════════════════
+       1️⃣  표지 화면
+    ════════════════════════════ */
+    #screen-cover {
+      background: var(--charcoal);
+      justify-content: center;
+      gap: 0;
+    }
+    .cover-symbol {
+      font-size: 56px;
+      color: #FFD98E;
+      margin-bottom: 28px;
+      opacity: 1;
+      text-shadow: 0 0 24px rgba(255,217,142,0.7), 0 0 48px rgba(255,200,80,0.35);
+      animation: glow 3s ease-in-out infinite;
+    }
+    @keyframes glow {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+    .cover-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 28px;
+      font-weight: 300;
+      color: var(--white);
+      text-align: center;
+      line-height: 1.5;
+      margin-bottom: 10px;
+      letter-spacing: 0.04em;
+    }
+    .cover-title strong {
+      font-weight: 600;
+      color: var(--gold-light);
+    }
+    .cover-sub {
+      font-size: 12px;
+      color: rgba(253,251,248,0.45);
+      text-align: center;
+      letter-spacing: 0.14em;
+      margin-bottom: 56px;
+    }
+    .cover-divider {
+      width: 40px;
+      height: 1px;
+      background: rgba(212,174,130,0.35);
+      margin: 0 auto 48px;
+    }
+    #screen-cover .btn {
+      background: transparent;
+      border: 1.5px solid rgba(212,174,130,0.5);
+      color: var(--gold-light);
+      font-size: 13px;
+      letter-spacing: 0.1em;
+    }
+    #screen-cover .btn:hover {
+      background: rgba(212,174,130,0.1);
+      transform: translateY(-2px);
+    }
+    #screen-cover .simji-mark {
+      color: rgba(253,251,248,0.25);
+    }
+
+    /* ════════════════════════════
+       2️⃣  안내 문구 화면
+    ════════════════════════════ */
+    #screen-guide {
+      justify-content: center;
+      gap: 0;
+    }
+    .guide-badge {
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      color: var(--gold);
+      font-weight: 500;
+      margin-bottom: 32px;
+    }
+    .guide-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--charcoal);
+      text-align: center;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+    .guide-ornament {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+      width: 100%;
+    }
+    .guide-ornament-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--border), transparent);
+    }
+    .guide-ornament-symbol {
+      font-size: 14px;
+      color: var(--gold);
+      opacity: 0.6;
+    }
+    .guide-box {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px 28px;
+      width: 100%;
+      margin-bottom: 28px;
+      position: relative;
+    }
+    .guide-box::before {
+      content: '❝';
+      position: absolute;
+      top: 14px;
+      left: 20px;
+      font-size: 28px;
+      color: var(--gold-pale);
+      font-family: serif;
+      line-height: 1;
+    }
+    .guide-text {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--charcoal-mid);
+      line-height: 2.1;
+      text-align: center;
+      word-break: keep-all;
+    }
+    .guide-note {
+      font-size: 12px;
+      color: var(--charcoal-light);
+      text-align: center;
+      line-height: 1.8;
+      margin-bottom: 32px;
+      letter-spacing: 0.04em;
+    }
+
+    /* ════════════════════════════
+       3️⃣  명상/대기 화면
+    ════════════════════════════ */
+    #screen-meditation {
+      justify-content: center;
+      gap: 0;
+      background: var(--cream);
+    }
+    .med-symbol {
+      font-size: 36px;
+      color: var(--sage);
+      margin-bottom: 24px;
+      animation: breathe 4s ease-in-out infinite;
+    }
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); opacity: 0.6; }
+      50% { transform: scale(1.12); opacity: 1; }
+    }
+    .med-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 18px;
+      font-weight: 300;
+      color: var(--charcoal);
+      text-align: center;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+    .med-text {
+      font-size: 13px;
+      color: var(--charcoal-light);
+      text-align: center;
+      line-height: 2;
+      margin-bottom: 40px;
+      word-break: keep-all;
+      max-width: 320px;
+    }
+    /* 호흡 타이머 */
+    .breath-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 1.5px solid var(--sage-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+      position: relative;
+      animation: breatheCircle 4s ease-in-out infinite;
+    }
+    @keyframes breatheCircle {
+      0%, 100% { transform: scale(1); background: transparent; }
+      50% { transform: scale(1.08); background: var(--sage-pale); }
+    }
+    .breath-label {
+      font-size: 11px;
+      color: var(--sage);
+      letter-spacing: 0.1em;
+      animation: breatheLabel 4s ease-in-out infinite;
+    }
+    @keyframes breatheLabel {
+      0%, 100% { content: '내쉬기'; }
+    }
+    .breath-guide {
+      font-size: 11px;
+      color: var(--charcoal-light);
+      text-align: center;
+      margin-bottom: 48px;
+      letter-spacing: 0.06em;
+    }
+
+    /* ════════════════════════════
+       4️⃣  카드 덱 화면
+    ════════════════════════════ */
+    #screen-deck {
+      justify-content: flex-start;
+      padding-top: 40px;
+    }
+    .deck-header {
+      text-align: center;
+      margin-bottom: 32px;
+      width: 100%;
+    }
+    .deck-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 18px;
+      font-weight: 300;
+      color: var(--charcoal);
+      margin-bottom: 8px;
+    }
+    .deck-sub {
+      font-size: 12px;
+      color: var(--charcoal-light);
+      letter-spacing: 0.04em;
+    }
+    .deck-area {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .deck-hint {
+      text-align: center;
+      font-size: 12px;
+      color: var(--charcoal-light);
+      letter-spacing: 0.06em;
+      transition: opacity 0.4s;
+    }
+
+    /* 카드 슬롯 */
+    .card-slot {
+      width: 100%;
+      aspect-ratio: 2/3;
+      cursor: pointer;
+      transform-style: preserve-3d;
+      perspective: 800px;
+      transition: transform 0.3s ease, opacity 0.4s ease;
+    }
+    .card-slot:hover { transform: translateY(-8px); }
+    .card-slot.fade-out { opacity: 0; transform: scale(0.85); pointer-events: none; }
+
+    .card-inner {
+      width: 100%; height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(.4,0,.2,1);
+    }
+    .card-back {
+      position: absolute; inset: 0;
+      border-radius: 10px;
+      background: var(--charcoal);
+      border: 1.5px solid rgba(212,174,130,0.3);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .card-back-pattern {
+      width: 60%; height: 70%;
+      border: 1px solid rgba(212,174,130,0.3);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      color: var(--gold-light);
+      opacity: 0.7;
+    }
+
+    /* ════════════════════════════
+       5️⃣  카드 뒤집기 + 결과
+    ════════════════════════════ */
+    #screen-result {
+      justify-content: flex-start;
+      padding-top: 40px;
+      gap: 0;
+    }
+
+    /* 큰 카드 */
+    .big-card-wrap {
+      width: 200px; height: 314px;
+      perspective: 1000px;
+      margin: 0 auto 28px;
+      flex-shrink: 0;
+    }
+    .big-inner {
+      width: 100%; height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.9s cubic-bezier(.4,0,.2,1);
+    }
+    .big-inner.flipped { transform: rotateY(180deg); }
+    .big-face {
+      position: absolute; inset: 0;
+      border-radius: 14px;
+      backface-visibility: hidden;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    }
+    .big-back {
+      background: var(--charcoal);
+      border: 2px solid rgba(212,174,130,0.3);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--gold-light);
+      font-size: 36px;
+    }
+    .big-front {
+      background: white;
+      border: 2px solid rgba(255,255,255,0.9);
+      transform: rotateY(180deg);
+      overflow: hidden;
+    }
+    .big-front img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+
+    /* 결과 카드 */
+    .result-card {
+      width: 100%;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 16px;
+      display: none;
+      animation: fadeIn 0.6s ease forwards;
+      overflow: visible;
+      word-break: keep-all;
+    }
+    .rc-name {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--charcoal);
+      margin-bottom: 6px;
+    }
+    .rc-keywords {
+      font-size: 11px;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+      font-weight: 500;
+      margin-bottom: 20px;
+    }
+    .rc-section {
+      margin-bottom: 16px;
+    }
+    .rc-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      color: var(--charcoal-light);
+      margin-bottom: 8px;
+      display: block;
+    }
+    .rc-message {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--charcoal);
+      line-height: 1.9;
+      word-break: keep-all;
+    }
+    .rc-action-box {
+      background: var(--sage-pale);
+      border-radius: 12px;
+      padding: 16px 18px;
+      display: none;
+      animation: fadeIn 0.5s ease forwards;
+    }
+    .rc-action-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      color: var(--sage);
+      margin-bottom: 8px;
+      display: block;
+    }
+    .rc-action-text {
+      font-size: 14px;
+      color: var(--charcoal-mid);
+      line-height: 1.8;
+      word-break: keep-all;
+    }
+
+    /* ════════════════════════════
+       6️⃣  인사이트 메모 화면
+    ════════════════════════════ */
+    #screen-insight {
+      justify-content: flex-start;
+      padding-top: 40px;
+      gap: 0;
+    }
+    .insight-header {
+      text-align: center;
+      margin-bottom: 28px;
+      width: 100%;
+    }
+    .insight-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 18px;
+      font-weight: 300;
+      color: var(--charcoal);
+      margin-bottom: 8px;
+    }
+    .insight-sub {
+      font-size: 12px;
+      color: var(--charcoal-light);
+      line-height: 1.7;
+      word-break: keep-all;
+    }
+    .insight-card-preview {
+      width: 100%;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .insight-card-img {
+      width: 64px; height: 100px;
+      border-radius: 8px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: var(--cream-dark);
+    }
+    .insight-card-info {
+      flex: 1;
+    }
+    .insight-card-name {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--charcoal);
+      margin-bottom: 4px;
+    }
+    .insight-card-kw {
+      font-size: 11px;
+      color: var(--gold);
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+    .insight-card-msg {
+      font-size: 12px;
+      color: var(--charcoal-mid);
+      line-height: 1.7;
+      font-style: italic;
+      word-break: keep-all;
+    }
+    .insight-textarea {
+      width: 100%;
+      min-height: 140px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 14px;
+      color: var(--charcoal);
+      line-height: 1.8;
+      resize: none;
+      outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: 20px;
+    }
+    .insight-textarea:focus {
+      border-color: var(--gold);
+    }
+    .insight-textarea::placeholder {
+      color: var(--charcoal-light);
+      font-size: 13px;
+    }
+    .insight-btns {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      margin-bottom: 16px;
+    }
+    .insight-btns .btn { flex: 1; }
+    .insight-skip {
+      font-size: 12px;
+      color: var(--charcoal-light);
+      text-align: center;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .insight-skip:hover { color: var(--charcoal-mid); }
+
+    /* ════════════════════════════
+       7️⃣  나만의 타로 한 장
+    ════════════════════════════ */
+    #screen-capture {
+      justify-content: flex-start;
+      padding-top: 40px;
+      gap: 0;
+    }
+    .capture-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 17px;
+      font-weight: 300;
+      color: var(--charcoal);
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .capture-sub {
+      font-size: 12px;
+      color: var(--charcoal-light);
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    /* 캡처 카드 */
+    .my-card {
+      width: 100%;
+      background: var(--charcoal);
+      border-radius: 20px;
+      padding: 28px 24px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .my-card::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      background: rgba(184,149,106,0.08);
+    }
+    .my-card::after {
+      content: '';
+      position: absolute;
+      bottom: -40px; left: -40px;
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      background: rgba(122,144,112,0.07);
+    }
+    .my-card-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+    .my-card-img {
+      width: 80px; height: 126px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: rgba(255,255,255,0.1);
+      flex-shrink: 0;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .my-card-info { flex: 1; }
+    .my-card-top-badge {
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      color: var(--gold-light);
+      opacity: 0.7;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .my-card-name {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--white);
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+    .my-card-kw {
+      font-size: 11px;
+      color: var(--gold-light);
+      opacity: 0.8;
+      letter-spacing: 0.06em;
+    }
+    .my-card-divider {
+      width: 100%;
+      height: 1px;
+      background: rgba(255,255,255,0.08);
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+    .my-card-message {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(253,251,248,0.85);
+      line-height: 1.9;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+      word-break: keep-all;
+    }
+    .my-card-insight-label {
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      color: var(--sage-light);
+      opacity: 0.8;
+      margin-bottom: 8px;
+      display: block;
+      position: relative;
+      z-index: 1;
+    }
+    .my-card-insight {
+      font-size: 13px;
+      color: rgba(253,251,248,0.75);
+      line-height: 1.8;
+      font-style: italic;
+      position: relative;
+      z-index: 1;
+      word-break: keep-all;
+    }
+    .my-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      position: relative;
+      z-index: 1;
+    }
+    .my-card-date {
+      font-size: 10px;
+      color: rgba(253,251,248,0.3);
+      letter-spacing: 0.08em;
+    }
+    .my-card-simji {
+      font-size: 10px;
+      color: rgba(212,174,130,0.5);
+      letter-spacing: 0.12em;
+    }
+
+    /* 캡처 버튼들 */
+    .capture-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      margin-bottom: 16px;
+    }
+    .capture-home {
+      text-align: center;
+    }
+    .capture-home a {
+      font-size: 12px;
+      color: var(--charcoal-light);
+      text-decoration: none;
+      border-bottom: 1px solid var(--cream-dark);
+      padding-bottom: 2px;
+      letter-spacing: 0.04em;
+      transition: color 0.2s;
+    }
+    .capture-home a:hover { color: var(--charcoal-mid); }
+    .restart-btn {
+      font-size: 12px;
+      color: var(--charcoal-light);
+      text-align: center;
+      cursor: pointer;
+      margin-top: 12px;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .restart-btn:hover { color: var(--charcoal-mid); }
+
+    /* ── 전송 완료 토스트 ── */
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--charcoal);
+      color: var(--white);
+      font-size: 13px;
+      padding: 12px 24px;
+      border-radius: 30px;
+      opacity: 0;
+      transition: all 0.3s ease;
+      pointer-events: none;
+      z-index: 100;
+      white-space: nowrap;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
 </head>
 <body>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;}
-.scene{
-  min-height:540px;
-  background:linear-gradient(160deg,#2C1F14 0%,#5C3D2A 50%,#7A5540 100%);
-  border-radius:20px;
-  font-family:sans-serif;
-  display:flex;flex-direction:column;align-items:center;
-  padding:2rem 1rem 2.5rem;
-  position:relative;overflow:hidden;
-}
-.scene::before{content:'';position:absolute;top:-80px;right:-60px;width:220px;height:220px;border-radius:50%;background:rgba(212,168,130,0.12);}
-.scene::after{content:'';position:absolute;bottom:-50px;left:-50px;width:180px;height:180px;border-radius:50%;background:rgba(122,140,110,0.1);}
+<div class="app">
 
-.top-badge{
-  font-size:11px;letter-spacing:0.12em;color:#D4A882;font-weight:600;
-  background:rgba(255,255,255,0.1);border-radius:20px;padding:5px 14px;
-  margin-bottom:1rem;z-index:2;border:1px solid rgba(212,168,130,0.3);
-}
-.title{font-size:17px;font-weight:500;color:#FAF7F2;text-align:center;line-height:1.6;margin-bottom:0.4rem;z-index:2;}
-.sub{font-size:13px;color:rgba(250,247,242,0.6);text-align:center;margin-bottom:1.8rem;z-index:2;}
-
-/* 카드 덱 */
-.deck-area{
-  width:100%;max-width:520px;
-  position:relative;
-  height:200px;
-  z-index:2;
-  margin-bottom:1.2rem;
-}
-.deck-hint{text-align:center;font-size:13px;color:rgba(250,247,242,0.55);z-index:2;position:relative;transition:opacity 0.3s;}
-
-.card-slot{
-  position:absolute;
-  width:72px;height:110px;
-  cursor:pointer;
-  transition:transform 0.3s ease;
-  transform-style:preserve-3d;
-  perspective:800px;
-}
-.card-slot:hover .card-inner{transform:rotateY(15deg) translateY(-14px);}
-.card-slot.selected .card-inner{transform:rotateY(0deg) translateY(-18px);}
-.card-slot.fade-out{opacity:0;transform:scale(0.85) translateY(20px);transition:all 0.4s ease;pointer-events:none;}
-
-.card-inner{
-  width:100%;height:100%;
-  position:relative;
-  transform-style:preserve-3d;
-  transition:transform 0.7s cubic-bezier(.4,0,.2,1);
-}
-.card-front,.card-back{
-  position:absolute;inset:0;
-  border-radius:12px;
-  backface-visibility:hidden;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-}
-.card-back{
-  background:linear-gradient(160deg,#5C3D2A,#8C6148,#B07D62);
-  border:1.5px solid rgba(212,168,130,0.5);
-  box-shadow:0 4px 16px rgba(92,61,42,0.4);
-}
-.card-back-pattern{
-  width:52px;height:80px;
-  border:1.5px solid rgba(255,255,255,0.5);
-  border-radius:6px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:20px;
-  background:rgba(255,255,255,0.12);
-}
-.card-back-pattern span{font-size:22px;opacity:0.85;}
-
-.card-front{
-  background:white;
-  border:1.5px solid rgba(255,255,255,0.9);
-  box-shadow:0 8px 30px rgba(160,140,220,0.3);
-  transform:rotateY(180deg);
-  padding:4px;
-}
-.cf-img-preview{width:100%;height:100%;object-fit:cover;border-radius:8px;}
-
-/* 선택 후 큰 카드 뒤집기 */
-.flip-stage{
-  display:none;
-  flex-direction:column;align-items:center;
-  z-index:2;width:100%;
-}
-.big-card-wrap{
-  width:180px;height:280px;
-  perspective:1000px;
-  margin-bottom:1.5rem;
-}
-.big-inner{
-  width:100%;height:100%;
-  position:relative;
-  transform-style:preserve-3d;
-  transition:transform 0.9s cubic-bezier(.4,0,.2,1);
-}
-.big-inner.flipped{transform:rotateY(180deg);}
-.big-front,.big-back{
-  position:absolute;inset:0;
-  border-radius:16px;
-  backface-visibility:hidden;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  box-shadow:0 12px 40px rgba(160,140,220,0.3);
-}
-.big-back{
-  background:linear-gradient(160deg,#5C3D2A,#8C6148,#B07D62);
-  border:2px solid rgba(212,168,130,0.5);
-}
-.big-back-inner{
-  width:140px;height:220px;
-  border:2px solid rgba(255,255,255,0.5);
-  border-radius:10px;
-  display:flex;align-items:center;justify-content:center;
-  background:rgba(255,255,255,0.1);
-  font-size:46px;
-}
-.big-front{
-  background:white;
-  border:2px solid rgba(255,255,255,0.9);
-  transform:rotateY(180deg);
-  padding:8px;
-}
-.bf-image{width:100%;height:100%;object-fit:cover;border-radius:10px;background:#f5f5f5;}
-
-/* 결과 카드 */
-.result-card{
-  width:100%;max-width:480px;
-  background:rgba(44,31,20,0.7);
-  backdrop-filter:blur(12px);
-  border:1.5px solid rgba(212,168,130,0.25);
-  border-radius:20px;
-  padding:1.5rem;
-  display:none;
-  animation:fadeUp 0.6s ease forwards;
-}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
-
-.rc-title{font-size:16px;color:#D4A882;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
-.rc-keywords{
-  font-size:12px;color:rgba(250,247,242,0.6);font-weight:600;
-  background:rgba(212,168,130,0.15);
-  display:inline-block;padding:4px 12px;border-radius:10px;
-  margin-bottom:12px;
-}
-
-/* Today's message 박스 */
-.rc-quote-wrap{
-  background:rgba(255,255,255,0.06);
-  border:1.5px solid rgba(212,168,130,0.3);
-  border-radius:14px;
-  padding:1rem 1.1rem;
-  margin-bottom:10px;
-}
-.rc-section-label{
-  font-size:10px;font-weight:700;letter-spacing:0.12em;
-  margin-bottom:6px;display:block;
-}
-.rc-quote-label{color:#D4A882;}
-.rc-quote-text{
-  font-size:15px;color:#FAF7F2;line-height:1.85;
-  font-style:italic;word-break:keep-all;
-}
-
-/* 한걸음 나아가기 박스 */
-.rc-action-wrap{
-  background:rgba(122,140,110,0.15);
-  border:1.5px solid rgba(168,184,156,0.35);
-  border-radius:14px;
-  padding:1rem 1.1rem;
-  margin-bottom:12px;
-  display:none;
-  animation:fadeUp 0.5s ease forwards;
-}
-.rc-action-label{color:#A8B89C;}
-.rc-action-text{
-  font-size:14px;color:rgba(250,247,242,0.85);line-height:1.85;word-break:keep-all;
-}
-
-.again-btn{
-  width:100%;padding:12px;
-  border:1.5px solid rgba(212,168,130,0.4);
-  border-radius:14px;
-  background:rgba(255,255,255,0.06);
-  color:#D4A882;font-size:14px;cursor:pointer;
-  transition:all 0.2s;
-}
-.again-btn:hover{background:rgba(212,168,130,0.15);transform:translateY(-2px);}
-</style>
-
-<div class="scene" id="scene">
-  <div class="top-badge">✦ STELLA TAROT ✦</div>
-  <div class="title" id="mainTitle">나의 길, 나의 인생!</div>
-  <div class="sub" id="mainSub">마음을 모으고 우주의 선의와 함께 지혜를 청합니다</div>
-
-  <div id="deckView" style="width:100%;display:flex;flex-direction:column;align-items:center;z-index:2;">
-    <div class="deck-area" id="deckArea"></div>
-    <div class="deck-hint" id="deckHint">마음이 끌리는 카드를 한 장 선택하세요</div>
+  <!-- ══════════════════════════
+       1️⃣  표지 화면
+  ══════════════════════════ -->
+  <div class="screen active" id="screen-cover">
+    <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+      <div class="cover-symbol">✦</div>
+      <div class="top-mark">STELLA TAROT</div>
+      <div class="cover-title">
+        나의 길,<br><strong>나의 인생</strong>
+      </div>
+      <div class="cover-sub">심리상담연구소 심지</div>
+      <div class="cover-divider"></div>
+      <button class="btn" onclick="goTo('screen-guide')">카드와 만나러 가기</button>
+    </div>
+    <div class="simji-mark">simjimind.co.kr</div>
   </div>
 
-  <div class="flip-stage" id="flipStage">
+  <!-- ══════════════════════════
+       2️⃣  안내 문구 화면
+  ══════════════════════════ -->
+    <div class="screen" id="screen-guide">
+    <div class="top-mark" style="margin-top:8px;">✦ STELLA TAROT ✦</div>
+    <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%;">
+      <div class="guide-title">타로를 시작하기 전에</div>
+      <div class="guide-ornament">
+        <div class="guide-ornament-line"></div>
+        <div class="guide-ornament-symbol">✦</div>
+        <div class="guide-ornament-line"></div>
+      </div>
+      <div class="guide-box">
+        <div class="guide-text">
+          타로 카드는 지금 이 순간<br>
+          당신의 마음이 향하는 곳을<br>
+          비추는 거울입니다.<br><br>
+          옳고 그름도, 좋고 나쁨도 없어요.<br>
+          다만 지금 이 순간<br>
+          마음으로 지혜를 구하는<br>
+          하나의 질문을 떠올리세요.
+        </div>
+      </div>
+      <div class="guide-ornament" style="margin-bottom:24px;">
+        <div class="guide-ornament-line"></div>
+        <div class="guide-ornament-symbol">✦</div>
+        <div class="guide-ornament-line"></div>
+      </div>
+      <div class="guide-note">
+        마음이 준비되면 버튼을 눌러주세요.
+      </div>
+      <button class="btn btn-primary" onclick="goTo('screen-meditation')">마음 모으기</button>
+    </div>
+    <div class="simji-mark">심리상담연구소 심지</div>
+  </div>
+
+  <!-- ══════════════════════════
+       3️⃣  명상/대기 화면
+  ══════════════════════════ -->
+  <div class="screen" id="screen-meditation">
+    <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%;">
+      <div class="med-title">나의 질문에 집중해주세요.</div>
+      <div class="med-text">
+        마음이 질문에 몰입해있을때<br>
+        내면의 소리가 지혜의 길을 안내합니다.
+      </div>
+      <div class="breath-circle">
+        <span class="breath-label" id="breathLabel">들이쉬기</span>
+      </div>
+      <div class="breath-guide" id="breathGuide">천천히 호흡해요</div>
+      <div style="height:48px;"></div>
+      <button class="btn btn-primary" onclick="goTo('screen-deck')">카드 만나러 가기</button>
+    </div>
+    <div class="simji-mark">심리상담연구소 심지</div>
+  </div>
+
+  <!-- ══════════════════════════
+       4️⃣  카드 덱 화면
+  ══════════════════════════ -->
+  <div class="screen" id="screen-deck">
+    <div class="deck-header">
+      <div class="top-mark">✦ STELLA TAROT ✦</div>
+      <div class="deck-title">마음이 끌리는 카드를<br>한 장 골라보세요</div>
+      <div class="deck-sub" style="margin-top:8px;">마음을 모으고 우주의 선의와 함께 지혜를 청합니다</div>
+    </div>
+    <div class="deck-area" id="deckArea"></div>
+    <div class="deck-hint" id="deckHint">✦</div>
+    <div class="simji-mark" style="margin-top:auto;">심리상담연구소 심지</div>
+  </div>
+
+  <!-- ══════════════════════════
+       5️⃣  결과 화면
+  ══════════════════════════ -->
+  <div class="screen" id="screen-result">
+    <div class="top-mark" style="margin-bottom:20px;">✦ YOUR CARD ✦</div>
     <div class="big-card-wrap">
       <div class="big-inner" id="bigInner">
-        <div class="big-back"><div class="big-back-inner">✦</div></div>
-        <div class="big-front" id="bigFront">
-          <img src="" class="bf-image" id="bfImage" alt="Tarot Card">
+        <div class="big-face big-back">✦</div>
+        <div class="big-face big-front">
+          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" id="bigImg" alt="">
         </div>
       </div>
     </div>
     <div class="result-card" id="resultCard">
-      <div class="rc-title" id="rcTitle"></div>
+      <div class="rc-name" id="rcName"></div>
       <div class="rc-keywords" id="rcKeywords"></div>
-
-      <div class="rc-quote-wrap">
-        <span class="rc-section-label rc-quote-label">✦ TODAY'S MESSAGE</span>
-        <div class="rc-quote-text" id="rcQuote"></div>
+      <div class="rc-section">
+        <span class="rc-label">TODAY'S MESSAGE</span>
+        <div class="rc-message" id="rcMessage"></div>
       </div>
-
-      <div class="rc-action-wrap" id="rcActionWrap">
-        <span class="rc-section-label rc-action-label">🌱 한걸음 나아가기</span>
+      <div class="rc-action-box" id="rcActionBox">
+        <span class="rc-action-label">🌱 한걸음 나아가기</span>
         <div class="rc-action-text" id="rcAction"></div>
       </div>
-
-      <button class="again-btn" onclick="restart()">다른 카드 뽑기</button>
     </div>
+    <div id="resultBtnWrap" style="width:100%; display:none; flex-direction:column; gap:10px; margin-bottom:16px; animation: fadeIn 0.5s ease forwards;">
+      <button class="btn btn-primary" onclick="goTo('screen-insight')">나의 인사이트 적기</button>
+      <button class="btn btn-outline" onclick="goTo('screen-capture')">그냥 넘어가기</button>
+    </div>
+    <div class="simji-mark">심리상담연구소 심지</div>
   </div>
-</div>
+
+  <!-- ══════════════════════════
+       6️⃣  인사이트 메모 화면
+  ══════════════════════════ -->
+  <div class="screen" id="screen-insight">
+    <div class="insight-header">
+      <div class="top-mark">✦ MY INSIGHT ✦</div>
+      <div class="insight-title">나의 인사이트</div>
+      <div class="insight-sub">
+        카드가 오늘 내게 건네는 말,<br>
+        내 마음에 떠오른 것들을 자유롭게 적어봐요.
+      </div>
+    </div>
+    <div class="insight-card-preview">
+      <img class="insight-card-img" id="insightImg" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="">
+      <div class="insight-card-info">
+        <div class="insight-card-name" id="insightName"></div>
+        <div class="insight-card-kw" id="insightKw"></div>
+        <div class="insight-card-msg" id="insightMsg"></div>
+      </div>
+    </div>
+    <textarea class="insight-textarea" id="insightText" placeholder="오늘 이 카드가 내게 말하는 것은…"></textarea>
+    <div class="insight-btns">
+      <button class="btn btn-primary" onclick="submitInsight()">나만의 타로 한 장 만들기</button>
+    </div>
+    <div class="insight-skip" onclick="skipInsight()">그냥 넘어가기</div>
+    <div class="simji-mark">심리상담연구소 심지</div>
+  </div>
+
+  <!-- ══════════════════════════
+       7️⃣  나만의 타로 한 장
+  ══════════════════════════ -->
+  <div class="screen" id="screen-capture">
+    <div class="top-mark" style="margin-bottom:6px;">✦ MY TAROT CARD ✦</div>
+    <div class="capture-title">나만의 타로 한 장</div>
+    <div class="capture-sub">오늘 나에게 온 카드예요</div>
+
+    <!-- 캡처될 카드 영역 -->
+    <div class="my-card" id="myCard">
+      <div class="my-card-header">
+        <img class="my-card-img" id="myCardImg" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="">
+        <div class="my-card-info">
+          <span class="my-card-top-badge">STELLA TAROT</span>
+          <div class="my-card-name" id="myCardName"></div>
+          <div class="my-card-kw" id="myCardKw"></div>
+        </div>
+      </div>
+      <div class="my-card-divider"></div>
+      <div class="my-card-message" id="myCardMessage"></div>
+      <div id="myCardInsightWrap" style="display:none;">
+        <span class="my-card-insight-label">MY INSIGHT</span>
+        <div class="my-card-insight" id="myCardInsight"></div>
+      </div>
+      <div class="my-card-footer">
+        <div class="my-card-date" id="myCardDate"></div>
+        <div class="my-card-simji">심리상담연구소 심지</div>
+      </div>
+    </div>
+
+    <div class="capture-btns">
+      <button class="btn btn-primary" onclick="saveCard()">📷 이미지로 저장하기</button>
+      <button class="btn btn-outline" onclick="sendToSheet()">💌 심지에 마음 전하기</button>
+    </div>
+    <div class="capture-home">
+      <a href="https://simjimind.co.kr" target="_blank">심리상담연구소 심지 홈페이지 방문하기 →</a>
+    </div>
+    <div class="restart-btn" onclick="restart()">처음으로 돌아가기</div>
+    <div class="simji-mark">simjimind.co.kr</div>
+  </div>
+
+</div><!-- .app -->
+
+<!-- 토스트 -->
+<div class="toast" id="toast"></div>
+
+<!-- html2canvas for 이미지 저장 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
+/* ────────────────────────────────
+   카드 데이터
+──────────────────────────────── */
+const BASE = 'https://simjimind.github.io/docs-stella-tarot/image/';
+
 const MAJOR_CARDS = [
   {n:'0',  name:'바보 (The Fool)',               keywords:'자유, 새로운 시작, 순수',
    quote:'모험은 계산 없이 시작될 때 가장 순수하다.',
    action:'오늘은 그냥 걸어봐요. 어디든, 이유 없이.',
-   img:'image/major_0.jpg'},
+   img:BASE+'major_0.jpg'},
   {n:'I',  name:'마법사 (The Magician)',          keywords:'창조력, 의지, 잠재력',
    quote:'이미 손 안에 있다. 쓰기만 하면 된다.',
    action:'지금 생각나는 그것, 오늘 딱 하나만 해봐요.',
-   img:'image/major_1.jpg'},
+   img:BASE+'major_1.jpg'},
   {n:'II', name:'여사제 (The High Priestess)',    keywords:'직관, 지혜, 신비',
    quote:'가장 조용한 목소리가 가장 깊은 진실을 말한다.',
    action:'잠깐 눈 감고, 지금 내 마음이 뭐라 하는지 들어봐요.',
-   img:'image/major_2.jpg'},
+   img:BASE+'major_2.jpg'},
   {n:'III',name:'여황제 (The Empress)',           keywords:'풍요, 모성애, 아름다움',
    quote:'돌보는 것에서 풍요는 시작된다.',
    action:'물 한 잔, 어깨 한 번 펴기. 그것만으로도 충분해요.',
-   img:'image/major_3.jpg'},
+   img:BASE+'major_3.jpg'},
   {n:'IV', name:'황제 (The Emperor)',             keywords:'권위, 질서, 리더십',
    quote:'흔들리지 않는 중심이 있는 곳에 신뢰가 모인다.',
    action:'오늘 결정한 것 하나, 흔들리지 않고 지켜봐요.',
-   img:'image/major_4.jpg'},
+   img:BASE+'major_4.jpg'},
   {n:'V',  name:'교황 (The Hierophant)',          keywords:'믿음, 전통, 가르침',
    quote:'혼자 짊어지는 것만이 용기가 아니다. 나누는 것도 용기다.',
    action:'혼자 안고 있는 것 중 하나, 가까운 사람에게 살짝 꺼내봐요.',
-   img:'image/major_5.jpg'},
+   img:BASE+'major_5.jpg'},
   {n:'VI', name:'연인 (The Lovers)',              keywords:'사랑, 조화, 선택',
    quote:'진심 어린 선택은 결과보다 먼저 의미를 만든다.',
    action:'오늘 하나만큼은 그냥 내가 좋아하는 것으로 골라봐요.',
-   img:'image/major_6.jpg'},
+   img:BASE+'major_6.jpg'},
   {n:'VII',name:'전차 (The Chariot)',             keywords:'의지, 전진, 승리',
    quote:'방향이 정해지면 속도는 따라온다.',
    action:'지금 가고 싶은 방향, 한 문장으로 적어봐요.',
-   img:'image/major_7.jpg'},
+   img:BASE+'major_7.jpg'},
   {n:'VIII',name:'힘 (Strength)',                keywords:'용기, 인내, 부드러운 힘',
    quote:'부드러움이 단단함을 이긴다.',
    action:'오늘 딱 한 번, 강하게 말하고 싶을 때 부드럽게 바꿔봐요.',
-   img:'image/major_8.jpg'},
+   img:BASE+'major_8.jpg'},
   {n:'IX', name:'은둔자 (The Hermit)',            keywords:'성찰, 내면의 빛, 탐구',
    quote:'혼자 걷는 길에서 만나는 자신이 가장 솔직한 스승이다.',
    action:'핸드폰 잠깐 내려놓고 나만의 시간 10분 가져봐요.',
-   img:'image/major_9.jpg'},
+   img:BASE+'major_9.jpg'},
   {n:'X',  name:'운명의 바퀴 (Wheel of Fortune)',keywords:'전환점, 운명, 기회',
    quote:'바퀴는 돈다. 멈추는 것은 없다.',
    action:'소리 내어 말해봐요. "이것도 지나간다."',
-   img:'image/major_10.jpg'},
+   img:BASE+'major_10.jpg'},
   {n:'XI', name:'정의 (Justice)',                keywords:'균형, 공정함, 진실',
    quote:'두려움 없이 진실을 마주하는 것이 가장 단단한 자유다.',
    action:'자꾸 눈길을 피했던 것 하나, 오늘 잠깐 바라봐요.',
-   img:'image/major_11.jpg'},
+   img:BASE+'major_11.jpg'},
   {n:'XII',name:'매달린 사람 (The Hanged Man)',   keywords:'희생, 관점의 변화, 수용',
    quote:'거꾸로 매달려야만 보이는 세상이 있다.',
    action:'그 사람 자리에 딱 1분만 앉아봐요.',
-   img:'image/major_12.jpg'},
+   img:BASE+'major_12.jpg'},
   {n:'XIII',name:'죽음 (Death)',                 keywords:'끝과 시작, 변화, 재탄생',
    quote:'끝이 없는 시작은 없다.',
    action:'더 이상 필요 없는 것 하나, 오늘 조용히 내려놓아봐요.',
-   img:'image/major_13.jpg'},
+   img:BASE+'major_13.jpg'},
   {n:'XIV',name:'절제 (Temperance)',             keywords:'조화, 타협, 치유',
    quote:'서두르지 않는 것도 하나의 지혜다.',
    action:'오늘 하나만 해도 충분해요. 그 말 한 번 해봐요.',
-   img:'image/major_14.jpg'},
+   img:BASE+'major_14.jpg'},
   {n:'XV', name:'악마 (The Devil)',              keywords:'집착, 욕망, 속박',
    quote:'사슬을 만든 손이 그것을 끊을 수도 있다.',
    action:'늘 하던 것 중 하나, 오늘은 다르게 해봐요. 딱 한 번.',
-   img:'image/major_15.jpg'},
+   img:BASE+'major_15.jpg'},
   {n:'XVI',name:'탑 (The Tower)',               keywords:'급격한 변화, 붕괴, 깨달음',
    quote:'무너진 자리가 더 단단한 토대가 된다.',
    action:'무너진 자리에서 다시 세울 것 하나만 생각해봐요.',
-   img:'image/major_16.jpg'},
+   img:BASE+'major_16.jpg'},
   {n:'XVII',name:'별 (The Star)',               keywords:'희망, 영감, 평온',
    quote:'어둠은 별을 지우지 못한다.',
    action:'오늘 밤 하늘 한 번 올려다봐요. 별이 없어도 괜찮아요.',
-   img:'image/major_17.jpg'},
+   img:BASE+'major_17.jpg'},
   {n:'XVIII',name:'달 (The Moon)',              keywords:'불안, 환상, 무의식',
    quote:'안개 속에서도 한 걸음은 내딛을 수 있다.',
    action:'불안한 것들 다 적어봐요. 그중 내가 할 수 있는 것 하나에만 동그라미.',
-   img:'image/major_18.jpg'},
+   img:BASE+'major_18.jpg'},
   {n:'XIX',name:'태양 (The Sun)',               keywords:'긍정, 성공, 기쁨',
    quote:'빛나는 것은 숨길 수 없다.',
    action:'오늘 잘한 것 하나, 소리 내어 스스로 칭찬해봐요.',
-   img:'image/major_19.jpg'},
+   img:BASE+'major_19.jpg'},
   {n:'XX', name:'심판 (Judgement)',             keywords:'부활, 결단, 각성',
    quote:'부름이 들릴 때, 일어서는 것만으로 충분하다.',
    action:'오래 미뤄온 연락 하나, 오늘 짧게라도 해봐요.',
-   img:'image/major_20.jpg'},
+   img:BASE+'major_20.jpg'},
   {n:'XXI',name:'세계 (The World)',             keywords:'완성, 성취, 통합',
    quote:'하나의 완성이 다음 여정의 문을 연다.',
    action:'최근 마무리한 것 하나 적고, 스스로 축하해봐요.',
-   img:'image/major_21.jpg'}
+   img:BASE+'major_21.jpg'}
 ];
 
-// 마이너 아르카나 카드별 quote/action
 const MINOR_DATA = {
-  Wands: {
-    'Ace':     {quote:'불꽃은 작아도 충분히 타오를 수 있다.',                          action:'딱 5분만요. 시작이 전부예요.'},
-    '2':       {quote:'원하는 것을 품은 것만으로 이미 여정은 시작되었다.',              action:'원하는 것, 오늘 한 문장으로 적어봐요.'},
-    '3':       {quote:'멀리 내다보는 눈이 더 멀리 나아가게 한다.',                     action:'한 발 앞을 내다보고 다음 단계 하나만 적어봐요.'},
-    '4':       {quote:'쉬는 것도 길을 걷는 것이다.',                                  action:'아무것도 안 하는 15분, 오늘 나에게 선물해봐요.'},
-    '5':       {quote:'부딪히는 곳에서 더 단단해진다.',                               action:'마음에 걸리는 사람에게 먼저 한마디 건네봐요.'},
-    '6':       {quote:'앞서 걷는 이는 혼자이지 않다.',                                action:'오늘의 작은 승리, 한 사람에게 털어놓아봐요.'},
-    '7':       {quote:'물러서지 않는 것만으로도 이긴다.',                              action:'포기하고 싶었던 것, 오늘 하루만 더 해봐요.'},
-    '8':       {quote:'기회는 준비된 손에만 잡힌다.',                                 action:'지금 바로 할 수 있는 것, 지금 해버려요.'},
-    '9':       {quote:'끝까지 버티는 자가 마지막을 본다.',                             action:'버텨온 나에게 "잘 버텼어" 세 번만 말해봐요.'},
-    '10':      {quote:'무거운 짐이 사명일 때, 그 무게는 의미가 된다.',                 action:'지금 짐 중 하나, 다른 사람에게 부탁해봐요.'},
-    'Princess':{quote:'날카로운 분석이 새로운 길을 연다.',                             action:'지금 하는 일에서 개선할 점 하나만 찾아봐요.'},
-    'Prince':  {quote:'집중하는 것이 가장 빠른 길이다.',                              action:'오늘 하나의 일에만 집중하는 시간을 정해봐요.'},
-    'Queen':   {quote:'희망을 잃지 않는 것이 가장 조용한 용기다.',                     action:'"그래도 된다, 그리고 계속한다" 오늘 한 번 말해봐요.'},
-    'Knight':  {quote:'열정은 방향을 만날 때 힘이 된다.',                             action:'열정이 식기 전에 지금 당장 한 걸음만 내딛어봐요.'}
+  Wands:{
+    'Ace':{quote:'불꽃은 작아도 충분히 타오를 수 있다.',action:'딱 5분만요. 시작이 전부예요.'},
+    '2':{quote:'원하는 것을 품은 것만으로 이미 여정은 시작되었다.',action:'원하는 것, 오늘 한 문장으로 적어봐요.'},
+    '3':{quote:'멀리 내다보는 눈이 더 멀리 나아가게 한다.',action:'한 발 앞을 내다보고 다음 단계 하나만 적어봐요.'},
+    '4':{quote:'쉬는 것도 길을 걷는 것이다.',action:'아무것도 안 하는 15분, 오늘 나에게 선물해봐요.'},
+    '5':{quote:'부딪히는 곳에서 더 단단해진다.',action:'마음에 걸리는 사람에게 먼저 한마디 건네봐요.'},
+    '6':{quote:'앞서 걷는 이는 혼자이지 않다.',action:'오늘의 작은 승리, 한 사람에게 털어놓아봐요.'},
+    '7':{quote:'물러서지 않는 것만으로도 이긴다.',action:'포기하고 싶었던 것, 오늘 하루만 더 해봐요.'},
+    '8':{quote:'기회는 준비된 손에만 잡힌다.',action:'지금 바로 할 수 있는 것, 지금 해버려요.'},
+    '9':{quote:'끝까지 버티는 자가 마지막을 본다.',action:'버텨온 나에게 "잘 버텼어" 세 번만 말해봐요.'},
+    '10':{quote:'무거운 짐이 사명일 때, 그 무게는 의미가 된다.',action:'지금 짐 중 하나, 다른 사람에게 부탁해봐요.'},
+    'Princess':{quote:'날카로운 분석이 새로운 길을 연다.',action:'지금 하는 일에서 개선할 점 하나만 찾아봐요.'},
+    'Prince':{quote:'집중하는 것이 가장 빠른 길이다.',action:'오늘 하나의 일에만 집중하는 시간을 정해봐요.'},
+    'Queen':{quote:'희망을 잃지 않는 것이 가장 조용한 용기다.',action:'"그래도 된다, 그리고 계속한다" 오늘 한 번 말해봐요.'},
+    'Knight':{quote:'열정은 방향을 만날 때 힘이 된다.',action:'열정이 식기 전에 지금 당장 한 걸음만 내딛어봐요.'}
   },
-  Cups: {
-    'Ace':     {quote:'새로운 감정이 찾아올 때 두려움보다 설렘이 먼저여도 된다.',       action:'오늘 설레는 것 하나, 잠깐 상상해봐요.'},
-    '2':       {quote:'진실한 만남은 서로를 더 온전하게 만든다.',                      action:'소중한 사람에게 짧은 안부 한 마디 보내봐요.'},
-    '3':       {quote:'기쁨은 나눌수록 커진다.',                                      action:'오늘 기쁜 일 하나, 누군가에게 나눠봐요.'},
-    '4':       {quote:'한계를 아는 것이 새로운 가능성의 시작이다.',                    action:'"이건 내 한계야" 인정하고 오늘 하나는 멈춰봐요.'},
-    '5':       {quote:'잃은 것을 보기 전에, 남은 것을 먼저 보라.',                    action:'아직 남아있는 것 세 가지만 적어봐요.'},
-    '6':       {quote:'순수한 마음은 언제나 돌아갈 수 있는 집이다.',                   action:'어린 시절 좋아했던 것 하나, 오늘 다시 꺼내봐요.'},
-    '7':       {quote:'꿈과 환상 사이, 지금 이 자리가 가장 실재한다.',                 action:'지금 눈에 보이고, 들리고, 느껴지는 것에 잠깐 머물러봐요.'},
-    '8':       {quote:'떠나는 용기가 더 나은 곳으로 이끈다.',                          action:'더 이상 나에게 맞지 않는 것 하나, 오늘 살며시 내려놓아봐요.'},
-    '9':       {quote:'바라던 것을 얻었을 때 온전히 기뻐하는 것도 연습이다.',           action:'바라던 것이 이루어진 순간을 잠깐 상상하며 미소 지어봐요.'},
-    '10':      {quote:'충만한 마음이 가장 큰 재산이다.',                               action:'지금 마음이 따뜻한 것 하나를 한 문장으로 기록해봐요.'},
-    'Princess':{quote:'조화와 봉사의 정신이 세상을 더 밝게 한다.',                     action:'오늘 누군가를 위해 작은 것 하나 해봐요.'},
-    'Prince':  {quote:'천천히 흐르는 물이 바위를 깎는다.',                             action:'급하지 않은 것 하나를 오늘은 일부러 천천히 해봐요.'},
-    'Queen':   {quote:'타인의 아픔을 느끼는 것이 세상을 치유하는 힘이다.',              action:'오늘 한 사람의 이야기, 끝까지 다 들어봐요.'},
-    'Knight':  {quote:'감정에 솔직한 것이 가장 설득력 있는 언어다.',                   action:'지금 느끼는 감정, 꾸미지 않고 한 사람에게 말해봐요.'}
+  Cups:{
+    'Ace':{quote:'새로운 감정이 찾아올 때 두려움보다 설렘이 먼저여도 된다.',action:'오늘 설레는 것 하나, 잠깐 상상해봐요.'},
+    '2':{quote:'진실한 만남은 서로를 더 온전하게 만든다.',action:'소중한 사람에게 짧은 안부 한 마디 보내봐요.'},
+    '3':{quote:'기쁨은 나눌수록 커진다.',action:'오늘 기쁜 일 하나, 누군가에게 나눠봐요.'},
+    '4':{quote:'한계를 아는 것이 새로운 가능성의 시작이다.',action:'"이건 내 한계야" 인정하고 오늘 하나는 멈춰봐요.'},
+    '5':{quote:'잃은 것을 보기 전에, 남은 것을 먼저 보라.',action:'아직 남아있는 것 세 가지만 적어봐요.'},
+    '6':{quote:'순수한 마음은 언제나 돌아갈 수 있는 집이다.',action:'어린 시절 좋아했던 것 하나, 오늘 다시 꺼내봐요.'},
+    '7':{quote:'꿈과 환상 사이, 지금 이 자리가 가장 실재한다.',action:'지금 눈에 보이고, 들리고, 느껴지는 것에 잠깐 머물러봐요.'},
+    '8':{quote:'떠나는 용기가 더 나은 곳으로 이끈다.',action:'더 이상 나에게 맞지 않는 것 하나, 오늘 살며시 내려놓아봐요.'},
+    '9':{quote:'바라던 것을 얻었을 때 온전히 기뻐하는 것도 연습이다.',action:'바라던 것이 이루어진 순간을 잠깐 상상하며 미소 지어봐요.'},
+    '10':{quote:'충만한 마음이 가장 큰 재산이다.',action:'지금 마음이 따뜻한 것 하나를 한 문장으로 기록해봐요.'},
+    'Princess':{quote:'조화와 봉사의 정신이 세상을 더 밝게 한다.',action:'오늘 누군가를 위해 작은 것 하나 해봐요.'},
+    'Prince':{quote:'천천히 흐르는 물이 바위를 깎는다.',action:'급하지 않은 것 하나를 오늘은 일부러 천천히 해봐요.'},
+    'Queen':{quote:'타인의 아픔을 느끼는 것이 세상을 치유하는 힘이다.',action:'오늘 한 사람의 이야기, 끝까지 다 들어봐요.'},
+    'Knight':{quote:'감정에 솔직한 것이 가장 설득력 있는 언어다.',action:'지금 느끼는 감정, 꾸미지 않고 한 사람에게 말해봐요.'}
   },
-  Swords: {
-    'Ace':     {quote:'명확한 한 마디가 긴 오해를 끊는다.',                            action:'오해가 쌓인 것 하나, 오늘 말로 살짝 풀어봐요.'},
-    '2':       {quote:'멈추는 것도 결단이다.',                                         action:'결정을 잠깐 멈추고, 충분히 생각하는 시간을 가져봐요.'},
-    '3':       {quote:'슬픔을 외면하지 않는 것이 치유의 시작이다.',                    action:'슬픔이 있다면 오늘은 그냥 슬퍼해도 돼요.'},
-    '4':       {quote:'쉬는 전사가 더 오래 싸운다.',                                   action:'오늘 일정 중 하나를 지우고 쉬어봐요.'},
-    '5':       {quote:'상처가 깊을수록 회복된 자리는 더 단단하다.',                    action:'상처받은 일, 종이에 쓰고 조용히 접어봐요.'},
-    '6':       {quote:'시련의 끝은 반드시 다른 강가에 닿는다.',                        action:'"이 시련도 끝이 있다" 적어서 잘 보이는 곳에 붙여봐요.'},
-    '7':       {quote:'지혜는 새로운 각도에서 시작된다.',                              action:'잘 모르는 것 하나, 오늘 새로 배워봐요.'},
-    '8':       {quote:'두려움을 알면서도 나아가는 것이 진짜 용기다.',                  action:'두려운 것을 적고, 그래도 할 수 있는 이유 하나 써봐요.'},
-    '9':       {quote:'밤이 가장 길게 느껴질 때 새벽이 가장 가깝다.',                  action:'자기 전 걱정 목록 적고, 접어서 서랍에 넣어봐요.'},
-    '10':      {quote:'바닥을 딛고 서야 다시 일어설 수 있다.',                         action:'"여기서만 올라갈 수 있다" 소리 내어 말해봐요.'},
-    'Princess':{quote:'엄격한 준비가 예상치 못한 어려움을 막는다.',                    action:'오늘 한 가지, 충분히 준비해봐요.'},
-    'Prince':  {quote:'새로운 생각은 언제나 열린 마음에서 온다.',                      action:'오늘의 문제 하나를 전혀 다른 방법으로 접근해봐요.'},
-    'Queen':   {quote:'\'아니오\'라고 말하는 것이 때로 가장 큰 사랑이다.',             action:'오늘 하나의 경계를 부드럽지만 명확하게 지켜봐요.'},
-    'Knight':  {quote:'날카로운 판단도 따뜻한 마음 위에서 빛난다.',                    action:'판단하기 전에 "이 사람은 왜 이랬을까?" 한 번만 생각해봐요.'}
+  Swords:{
+    'Ace':{quote:'명확한 한 마디가 긴 오해를 끊는다.',action:'오해가 쌓인 것 하나, 오늘 말로 살짝 풀어봐요.'},
+    '2':{quote:'멈추는 것도 결단이다.',action:'결정을 잠깐 멈추고, 충분히 생각하는 시간을 가져봐요.'},
+    '3':{quote:'슬픔을 외면하지 않는 것이 치유의 시작이다.',action:'슬픔이 있다면 오늘은 그냥 슬퍼해도 돼요.'},
+    '4':{quote:'쉬는 전사가 더 오래 싸운다.',action:'오늘 일정 중 하나를 지우고 쉬어봐요.'},
+    '5':{quote:'상처가 깊을수록 회복된 자리는 더 단단하다.',action:'상처받은 일, 종이에 쓰고 조용히 접어봐요.'},
+    '6':{quote:'시련의 끝은 반드시 다른 강가에 닿는다.',action:'"이 시련도 끝이 있다" 적어서 잘 보이는 곳에 붙여봐요.'},
+    '7':{quote:'지혜는 새로운 각도에서 시작된다.',action:'잘 모르는 것 하나, 오늘 새로 배워봐요.'},
+    '8':{quote:'두려움을 알면서도 나아가는 것이 진짜 용기다.',action:'두려운 것을 적고, 그래도 할 수 있는 이유 하나 써봐요.'},
+    '9':{quote:'밤이 가장 길게 느껴질 때 새벽이 가장 가깝다.',action:'자기 전 걱정 목록 적고, 접어서 서랍에 넣어봐요.'},
+    '10':{quote:'바닥을 딛고 서야 다시 일어설 수 있다.',action:'"여기서만 올라갈 수 있다" 소리 내어 말해봐요.'},
+    'Princess':{quote:'엄격한 준비가 예상치 못한 어려움을 막는다.',action:'오늘 한 가지, 충분히 준비해봐요.'},
+    'Prince':{quote:'새로운 생각은 언제나 열린 마음에서 온다.',action:'오늘의 문제 하나를 전혀 다른 방법으로 접근해봐요.'},
+    'Queen':{quote:'"아니오"라고 말하는 것이 때로 가장 큰 사랑이다.',action:'오늘 하나의 경계를 부드럽지만 명확하게 지켜봐요.'},
+    'Knight':{quote:'날카로운 판단도 따뜻한 마음 위에서 빛난다.',action:'판단하기 전에 "이 사람은 왜 이랬을까?" 한 번만 생각해봐요.'}
   },
-  Disks: {
-    'Ace':     {quote:'땅에 씨앗을 심는 것이 수확의 시작이다.',                        action:'오늘 작은 것 하나라도 실제로 해봐요.'},
-    '2':       {quote:'흔들리면서도 균형을 찾는 것이 삶의 리듬이다.',                  action:'균형이 필요한 두 가지를 적고 하나씩 조율해봐요.'},
-    '3':       {quote:'함께 만든 것이 가장 오래 남는다.',                              action:'함께 일하는 사람 한 명에게 감사 한마디 전해봐요.'},
-    '4':       {quote:'가진 것을 지키는 것도 하나의 지혜다.',                          action:'지금 소중한 것 세 가지, 적어봐요.'},
-    '5':       {quote:'결핍은 더 간절하게 만들고, 간절함은 더 깊이 성장하게 한다.',    action:'부족한 것 대신, 지금 있는 것으로 할 수 있는 것 찾아봐요.'},
-    '6':       {quote:'흘려보낼 수 있는 것이 진짜 풍요다.',                            action:'오늘 나눌 수 있는 것 하나, 실제로 나눠봐요.'},
-    '7':       {quote:'기다리는 농부는 알고 있다. 열매는 때가 되면 익는다는 것을.',    action:'지금까지 해온 것을 돌아보고 한 줄 기록해봐요.'},
-    '8':       {quote:'작은 것에 정성을 다하는 손이 큰 것을 만든다.',                  action:'오늘 작은 것 하나에 정성을 다해봐요.'},
-    '9':       {quote:'홀로 이룬 풍요는 통찰 위에 세워진다.',                          action:'혼자 이룬 것 하나를 스스로 인정하고 적어봐요.'},
-    '10':      {quote:'풍요는 쌓는 것이 아니라 흐르는 것이다.',                        action:'지금 풍요로운 것 하나를 의식적으로 느껴봐요.'},
-    'Princess':{quote:'확실한 준비를 갖추는 것이 명품 인생을 만든다.',                 action:'오늘 하나의 준비를 꼼꼼하게 해봐요.'},
-    'Prince':  {quote:'서두르지 않는 성실함이 결국 도착한다.',                         action:'오늘 서두르지 않고 한 가지를 끝까지 마무리해봐요.'},
-    'Queen':   {quote:'나눌 줄 아는 것이 가장 큰 풍요다.',                             action:'오늘 한 사람에게 작은 것이라도 나눠줘봐요.'},
-    'Knight':  {quote:'고독한 노력이 가장 단단한 열매를 맺는다.',                      action:'아무도 보지 않아도 오늘 해야 할 것 하나, 묵묵히 해봐요.'}
+  Disks:{
+    'Ace':{quote:'땅에 씨앗을 심는 것이 수확의 시작이다.',action:'오늘 작은 것 하나라도 실제로 해봐요.'},
+    '2':{quote:'흔들리면서도 균형을 찾는 것이 삶의 리듬이다.',action:'균형이 필요한 두 가지를 적고 하나씩 조율해봐요.'},
+    '3':{quote:'함께 만든 것이 가장 오래 남는다.',action:'함께 일하는 사람 한 명에게 감사 한마디 전해봐요.'},
+    '4':{quote:'가진 것을 지키는 것도 하나의 지혜다.',action:'지금 소중한 것 세 가지, 적어봐요.'},
+    '5':{quote:'결핍은 더 간절하게 만들고, 간절함은 더 깊이 성장하게 한다.',action:'부족한 것 대신, 지금 있는 것으로 할 수 있는 것 찾아봐요.'},
+    '6':{quote:'흘려보낼 수 있는 것이 진짜 풍요다.',action:'오늘 나눌 수 있는 것 하나, 실제로 나눠봐요.'},
+    '7':{quote:'기다리는 농부는 알고 있다. 열매는 때가 되면 익는다는 것을.',action:'지금까지 해온 것을 돌아보고 한 줄 기록해봐요.'},
+    '8':{quote:'작은 것에 정성을 다하는 손이 큰 것을 만든다.',action:'오늘 작은 것 하나에 정성을 다해봐요.'},
+    '9':{quote:'홀로 이룬 풍요는 통찰 위에 세워진다.',action:'혼자 이룬 것 하나를 스스로 인정하고 적어봐요.'},
+    '10':{quote:'풍요는 쌓는 것이 아니라 흐르는 것이다.',action:'지금 풍요로운 것 하나를 의식적으로 느껴봐요.'},
+    'Princess':{quote:'확실한 준비를 갖추는 것이 명품 인생을 만든다.',action:'오늘 하나의 준비를 꼼꼼하게 해봐요.'},
+    'Prince':{quote:'서두르지 않는 성실함이 결국 도착한다.',action:'오늘 서두르지 않고 한 가지를 끝까지 마무리해봐요.'},
+    'Queen':{quote:'나눌 줄 아는 것이 가장 큰 풍요다.',action:'오늘 한 사람에게 작은 것이라도 나눠줘봐요.'},
+    'Knight':{quote:'고독한 노력이 가장 단단한 열매를 맺는다.',action:'아무도 보지 않아도 오늘 해야 할 것 하나, 묵묵히 해봐요.'}
   }
 };
 
-const SUITS = [
-  {k:'Wands', ko:'지팡이', kw:'열정, 행동, 에너지'},
-  {k:'Cups',  ko:'컵',    kw:'감정, 사랑, 관계'},
-  {k:'Swords',ko:'검',    kw:'생각, 결단, 지성'},
-  {k:'Disks', ko:'디스크',kw:'물질, 현실, 안정'}
+const SUITS=[
+  {k:'Wands',ko:'지팡이',kw:'열정, 행동, 에너지'},
+  {k:'Cups',ko:'컵',kw:'감정, 사랑, 관계'},
+  {k:'Swords',ko:'검',kw:'생각, 결단, 지성'},
+  {k:'Disks',ko:'디스크',kw:'물질, 현실, 안정'}
 ];
-const FACES = ['Ace','2','3','4','5','6','7','8','9','10','Princess','Prince','Queen','Knight'];
+const FACES=['Ace','2','3','4','5','6','7','8','9','10','Princess','Prince','Queen','Knight'];
 
-const MINOR_CARDS = [];
-SUITS.forEach(suit => {
-  FACES.forEach(face => {
-    const d = MINOR_DATA[suit.k][face];
-    MINOR_CARDS.push({
-      n: face,
-      name: `${suit.ko} ${face}`,
-      keywords: suit.kw,
-      quote: d.quote,
-      action: d.action,
-      img: `image/${suit.k.toLowerCase()}_${face.toLowerCase()}.jpg`
-    });
+const MINOR_CARDS=[];
+SUITS.forEach(s=>{
+  FACES.forEach(f=>{
+    const d=MINOR_DATA[s.k][f];
+    MINOR_CARDS.push({n:f,name:`${s.ko} ${f}`,keywords:s.kw,quote:d.quote,action:d.action,img:`${BASE}${s.k.toLowerCase()}_${f.toLowerCase()}.jpg`});
   });
 });
+const FULL_DECK=[...MAJOR_CARDS,...MINOR_CARDS];
 
-const FULL_DECK = [...MAJOR_CARDS, ...MINOR_CARDS];
+/* ────────────────────────────────
+   상태
+──────────────────────────────── */
+let currentCard = null;
+let breathTimer = null;
+let typeTimers = [];
 
-function shuffle(arr){
+/* ────────────────────────────────
+   화면 전환
+──────────────────────────────── */
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+  if (id === 'screen-deck') buildDeck();
+  if (id === 'screen-meditation') startBreath();
+  else stopBreath();
+}
+
+/* ────────────────────────────────
+   호흡 애니메이션
+──────────────────────────────── */
+function startBreath() {
+  const label = document.getElementById('breathLabel');
+  const guide = document.getElementById('breathGuide');
+  const phases = [
+    {text:'들이쉬기', guide:'코로 천천히 들이마셔요', dur:4000},
+    {text:'멈추기', guide:'잠깐 머물러요', dur:2000},
+    {text:'내쉬기', guide:'입으로 천천히 내보내요', dur:4000},
+    {text:'멈추기', guide:'고요함을 느껴봐요', dur:2000},
+  ];
+  let i = 0;
+  function tick() {
+    label.textContent = phases[i].text;
+    guide.textContent = phases[i].guide;
+    breathTimer = setTimeout(() => { i = (i+1) % phases.length; tick(); }, phases[i].dur);
+  }
+  tick();
+}
+function stopBreath() {
+  clearTimeout(breathTimer);
+}
+
+/* ────────────────────────────────
+   카드 덱 생성
+──────────────────────────────── */
+function shuffle(arr) {
   const a=[...arr];
   for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
   return a;
 }
 
-let busy = false;
-
-function buildDeck(){
+function buildDeck() {
   const area = document.getElementById('deckArea');
   area.innerHTML = '';
-  const pool = shuffle(FULL_DECK).slice(0, 10);
-  const W = area.offsetWidth || 480;
-  const total = pool.length;
-  const cardW = 72;
-  const spread = Math.min(W - cardW, total * 48);
-  const step = spread / (total - 1);
+  const pool = shuffle(FULL_DECK).slice(0, 12);
 
   pool.forEach((c, i) => {
     const slot = document.createElement('div');
     slot.className = 'card-slot';
-    const left = (W/2 - spread/2) + i*step - cardW/2;
-    const baseAngle = (i - (total-1)/2) * 3.5;
-    const baseY = Math.abs(i - (total-1)/2) * 1.5;
-    slot.style.cssText = `left:${left}px;top:${baseY+30}px;transform:rotate(${baseAngle}deg);`;
-    slot.innerHTML = `
-      <div class="card-inner">
-        <div class="card-back"><div class="card-back-pattern"><span>✦</span></div></div>
-        <div class="card-front"><img src="${c.img}" class="cf-img-preview" onerror="this.src='https://via.placeholder.com/72x110?text=Card'"></div>
-      </div>`;
-    slot.onclick = () => selectCard(c, slot, pool, i);
+    slot.innerHTML = `<div class="card-inner"><div class="card-back"><div class="card-back-pattern">✦</div></div></div>`;
+    slot.onclick = () => selectCard(c, slot, i, pool.length);
     area.appendChild(slot);
   });
 }
 
-function selectCard(card, slot, pool, idx){
-  if(busy) return;
-  busy = true;
-
+function selectCard(card, slot, idx, total) {
+  currentCard = card;
   document.querySelectorAll('.card-slot').forEach((s, i) => {
-    if(i !== idx) setTimeout(() => s.classList.add('fade-out'), i < idx ? 0 : 50);
+    if (i !== idx) setTimeout(() => s.classList.add('fade-out'), 80);
   });
-
-  document.getElementById('deckHint').style.opacity = '0';
-  document.getElementById('mainTitle').textContent = '카드를 뽑았습니다';
-  document.getElementById('mainSub').textContent = '오늘의 메시지를 확인하세요';
-
   setTimeout(() => {
-    document.getElementById('deckView').style.display = 'none';
-    document.getElementById('flipStage').style.display = 'flex';
-    document.getElementById('bfImage').src = card.img;
-
-    setTimeout(() => {
-      document.getElementById('bigInner').classList.add('flipped');
-      setTimeout(() => { showReading(card); }, 800);
-    }, 600);
+    goTo('screen-result');
+    showResult(card);
   }, 500);
 }
 
-function showReading(card){
-  const rc = document.getElementById('resultCard');
-  rc.style.display = 'block';
+/* ────────────────────────────────
+   결과 화면
+──────────────────────────────── */
+function showResult(card) {
+  document.getElementById('bigImg').src = card.img;
+  document.getElementById('rcName').textContent = card.name;
+  document.getElementById('rcKeywords').textContent = card.keywords;
+  document.getElementById('rcMessage').textContent = '';
+  document.getElementById('rcAction').textContent = '';
+  document.getElementById('rcActionBox').style.display = 'none';
+  document.getElementById('resultBtnWrap').style.display = 'none';
 
-  document.getElementById('rcTitle').textContent = `✦ ${card.name}`;
-  document.getElementById('rcKeywords').textContent = `키워드  ${card.keywords}`;
+  setTimeout(() => {
+    document.getElementById('bigInner').classList.add('flipped');
+    setTimeout(() => {
+      document.getElementById('resultCard').style.display = 'block';
+      typeText(document.getElementById('rcMessage'), card.quote, 28, () => {
+        setTimeout(() => {
+          document.getElementById('rcActionBox').style.display = 'block';
+          typeText(document.getElementById('rcAction'), card.action, 22, () => {
+            setTimeout(() => {
+              document.getElementById('resultBtnWrap').style.display = 'flex';
+            }, 300);
+          });
+        }, 300);
+      });
+    }, 800);
+  }, 400);
+}
 
-  // Today's message 타이핑
-  const quoteEl = document.getElementById('rcQuote');
-  quoteEl.textContent = '';
+function typeText(el, text, speed, cb) {
+  // 기존 타이머 모두 정리
+  typeTimers.forEach(t => clearTimeout(t));
+  typeTimers = [];
+  el.textContent = '';
   let i = 0;
-  function typeQuote(){
-    if(i < card.quote.length){
-      quoteEl.textContent += card.quote[i++];
-      setTimeout(typeQuote, 28);
-    } else {
-      // 타이핑 완료 후 한걸음 나아가기 등장
-      setTimeout(() => {
-        const actionWrap = document.getElementById('rcActionWrap');
-        actionWrap.style.display = 'block';
-        const actionEl = document.getElementById('rcAction');
-        actionEl.textContent = '';
-        let j = 0;
-        function typeAction(){
-          if(j < card.action.length){
-            actionEl.textContent += card.action[j++];
-            setTimeout(typeAction, 22);
-          }
-        }
-        typeAction();
-      }, 300);
-    }
+  function next() {
+    if (i < text.length) {
+      el.textContent += text[i++];
+      const t = setTimeout(next, speed);
+      typeTimers.push(t);
+    } else if (cb) cb();
   }
-  typeQuote();
+  next();
 }
 
-function restart(){
-  busy = false;
-  location.reload();
+/* ────────────────────────────────
+   인사이트 화면
+──────────────────────────────── */
+function goToInsight() {
+  if (!currentCard) return;
+  document.getElementById('insightImg').src = currentCard.img;
+  document.getElementById('insightName').textContent = currentCard.name;
+  document.getElementById('insightKw').textContent = currentCard.keywords;
+  document.getElementById('insightMsg').textContent = `"${currentCard.quote}"`;
+  document.getElementById('insightText').value = '';
+  goTo('screen-insight');
 }
 
-window.addEventListener('load', () => { setTimeout(buildDeck, 100); });
+// result 화면의 인사이트 버튼이 goTo로 바로 가므로 여기서 세팅
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelector('#screen-result .btn-primary').addEventListener('click', (e) => {
+    e.stopImmediatePropagation();
+    goToInsight();
+  });
+  document.querySelector('#screen-result .btn-outline').addEventListener('click', (e) => {
+    e.stopImmediatePropagation();
+    buildCaptureCard('');
+    goTo('screen-capture');
+  });
+});
+
+function submitInsight() {
+  const text = document.getElementById('insightText').value.trim();
+  buildCaptureCard(text);
+  sendToSheet(text);
+  goTo('screen-capture');
+}
+
+function skipInsight() {
+  buildCaptureCard('');
+  goTo('screen-capture');
+}
+
+/* ────────────────────────────────
+   캡처 카드 생성
+──────────────────────────────── */
+function buildCaptureCard(insightText) {
+  if (!currentCard) return;
+  document.getElementById('myCardImg').src = currentCard.img;
+  document.getElementById('myCardName').textContent = currentCard.name;
+  document.getElementById('myCardKw').textContent = currentCard.keywords;
+  document.getElementById('myCardMessage').textContent = `"${currentCard.quote}"`;
+
+  const insightWrap = document.getElementById('myCardInsightWrap');
+  if (insightText) {
+    insightWrap.style.display = 'block';
+    document.getElementById('myCardInsight').textContent = insightText;
+  } else {
+    insightWrap.style.display = 'none';
+  }
+
+  const now = new Date();
+  document.getElementById('myCardDate').textContent =
+    `${now.getFullYear()}. ${String(now.getMonth()+1).padStart(2,'0')}. ${String(now.getDate()).padStart(2,'0')}`;
+}
+
+/* ────────────────────────────────
+   이미지 저장
+──────────────────────────────── */
+async function saveCard() {
+  const el = document.getElementById('myCard');
+  try {
+    const canvas = await html2canvas(el, { scale: 2, useCORS: true, backgroundColor: null });
+    const link = document.createElement('a');
+    link.download = `나만의타로_${new Date().toLocaleDateString('ko-KR').replace(/\. /g,'-').replace('.','')}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    showToast('💾 이미지가 저장되었어요!');
+  } catch(e) {
+    showToast('저장 중 오류가 생겼어요. 스크린샷을 이용해주세요.');
+  }
+}
+
+/* ────────────────────────────────
+   구글 시트 전송
+──────────────────────────────── */
+function sendToSheet(insightText) {
+  if (!currentCard) return;
+  const text = insightText || document.getElementById('insightText')?.value || '';
+  // 구글 시트 웹훅 URL (트리님이 나중에 연결)
+  const SHEET_URL = 'YOUR_GOOGLE_SHEET_WEBHOOK_URL';
+  const payload = {
+    date: new Date().toLocaleString('ko-KR'),
+    card: currentCard.name,
+    keywords: currentCard.keywords,
+    insight: text
+  };
+  if (SHEET_URL !== 'YOUR_GOOGLE_SHEET_WEBHOOK_URL') {
+    fetch(SHEET_URL, { method:'POST', mode:'no-cors', body: JSON.stringify(payload) });
+  }
+  showToast('🌿 마음이 전달되었어요. 감사해요.');
+}
+
+/* ────────────────────────────────
+   토스트
+──────────────────────────────── */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+/* ────────────────────────────────
+   처음으로
+──────────────────────────────── */
+function restart() {
+  currentCard = null;
+  document.getElementById('bigInner').classList.remove('flipped');
+  document.getElementById('resultCard').style.display = 'none';
+  document.getElementById('insightText').value = '';
+  goTo('screen-cover');
+}
 </script>
 </body>
 </html>
